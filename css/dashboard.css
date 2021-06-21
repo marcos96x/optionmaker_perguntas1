@@ -1,0 +1,111 @@
+body {
+    
+    height: 100vh;
+    overflow-x: hidden;
+}
+
+.gray-panel {
+    background-color: rgb(244, 244, 244);
+    border: 1px solid transparent;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.white-panel {
+    background-color: rgb(255, 255, 255);
+    margin: 10px;
+    border-style: none;
+    border-radius: 5px;
+    border-radius: 5px;
+    padding: 5px;
+    -webkit-box-shadow: 0px 0px 28px -15px rgba(163,161,163,1);
+    -moz-box-shadow: 0px 0px 28px -15px rgba(163,161,163,1);
+    box-shadow: 0px 0px 28px -15px rgba(163,161,163,1);
+
+}
+/* Mobile */
+@media screen and (max-width: 799px) {
+    .main-card {
+        margin-top: 50px;
+    }
+}
+
+/* Desktop */
+@media screen and (min-width: 800px) {
+  
+
+    .form-input {
+        max-width: 70% !important;
+    }
+
+    .main-card {
+        margin-top: 60px;
+    }
+}
+
+.gray-text {
+    color: rgb(75, 75, 75) !important;
+}
+
+.btn-red {
+    background-color: rgb(235, 67, 67);
+    color: whitesmoke;
+}
+
+.btn-outline-red {
+    border: 1px solid rgb(235, 67, 67);
+    background-color: rgb(239, 239, 239);
+    color: rgb(235, 67, 67);;
+}
+.btn-outline-red:hover {
+    border: 1px solid rgb(239, 239, 239);
+    background-color:  rgb(235, 67, 67);
+    color: rgb(239, 239, 239);
+}
+
+.rounded-circle {
+    background-color: rgb(152, 16, 16);
+    border-radius: 50%;
+    width: 30px !important;
+    height: 30px !important;
+    color: white;
+    text-align: center;
+    margin-right: 10px;
+}
+
+.nao-selecionada {
+    background-color: transparent;
+}
+.selecionada {
+    background-color: rgb(201, 201, 201);
+}
+.alternativa {
+    font-size: 20px;
+    margin-bottom: 5px;
+    padding: 15px;
+}
+
+.pointer:hover {
+    cursor: pointer;
+}
+
+.badge-danger {
+    padding: 15px !important
+}
+
+.link-menu:hover {
+    color: #dc3545 !important;
+    transition-duration: 0.2s;
+}
+
+.gold-text {
+    color: #D4AF37 !important;
+}
+
+.silver-text {
+    color: #C0C0C0 !important;
+}
+
+.bronze-text {
+    color: #CD7F32 !important;
+}

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./plugins/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <link rel="stylesheet" href="./css/toastr.css">
+    <!-- CSS Index -->
+    <link rel="stylesheet" href="./css/quiz.css">
+    <title>Página de Quiz</title>
+</head>
+
+<body>
+
+    <br>
+    <div class="container" id="app">
+        <div class="row" v-if="pergunta_atual != null">
+            <div class="col-sm-12 text-center">
+                <h4>Você faz parte do grupo <strong id="nomeGrupo"></strong></h4>
+                Tempo restante: <span id="minuto"></span>:<span id="segundo"></span>
+                <br><br>
+            </div>
+            <div class="col-sm-12 col-md-8 offset-md-2 text-center">
+                <div class="progress">
+                    <div class="progress-bar bg-danger" role="progressbar" :style="porcentagemStyle"
+                        :aria-valuenow="porcentagem" aria-valuemin="0" aria-valuemax="100">{{ porcentagem }}%</div>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-8 offset-md-2 mt-5">
+                <h3 class="gray-text">
+                    <strong class="titulo_pergunta">
+                        {{ pergunta_atual.pergunta_id }}. {{ pergunta_atual.pergunta_texto }}
+                    </strong>
+                </h3>
+            </div>
+
+
+            <div class="col-sm-12 col-md-8 offset-md-2 mt-5">
+
+                <div :class="'alternativa pointer row  ' + alternativa.alternativa_class"
+                    v-for="alternativa in pergunta_atual.pergunta_alternativas"
+                    v-on:click="selecionaQuestao(alternativa)">
+                    <div class="col-12">
+                        <div class="row align-items-center">
+                            <div class="col-lg-1 col-2 align-self-start">
+                                <div class="rounded-circle red">{{ alternativa.alternativa_indicador}}</div>
+                            </div>
+                            <div class="col-lg-11 col-10 alternativa_text ">
+                                <p>{{ alternativa.alternativa_texto }}</p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+                <nav class="navbar fixed-bottom navbar-light bg-light">
+
+
+                    <div class="container">
+                        <ul class="nav navbar-nav mx-auto">
+                            <li class="nav-item" v-if="pagina > 0"> <button class="btn btn-outline-red"
+                                    v-on:click="prevPergunta()">
+                                    <i class="fa fa-backward" aria-hidden="true"></i> Anterior
+                                </button></li>
+                        </ul>
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item" v-if="qtd_perguntas > pagina">
+                                <button class="btn btn-outline-red " v-on:click="nextPergunta()">Próximo
+                                    <i class="fa fa-forward" aria-hidden="true"></i>
+                                </button>
+                            </li>
+                        </ul>
+                        <ul class="nav navbar-nav mx-auto">
+                            <li class="nav-item" v-if="qtd_perguntas == pagina"> <button class="btn btn-red"
+                                    v-on:click="finaliza()"><i class="fa fa-check" aria-hidden="true"></i>
+                                    Finalizar</button></li>
+                        </ul>
+
+
+                    </div>
+                </nav>
+
+            </div>
+            <div class="col-sm-12 col-md-2 align-self-end mb-3 text-center">
+                <img src="./img/logo.png" alt="" class="img-responsive" width="100px">
+            </div>
+
+            <div class="col-sm-12">
+                <br><br><br>
+            </div>
+        </div>
+        <div class="row mt-5" v-if="endQuiz">
+            <div class="col-sm-12 text-center">
+                <h3>Obrigado por participar!</h3>
+                <h5>Você será redirecionado em breve</h5>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Constantes -->
+    <script src="./js/constantes.js"></script>
+    <!-- Scripts -->
+    <script src="./plugins/jquery.js"></script>
+    <script src="./plugins/vue.js"></script>
+    <script src="./plugins/bootstrap/bootstrap.js"></script>
+    <script src="./js/toastr.js"></script>
+
+    <!-- Autenticacao -->
+    <script src="./js/autenticacao.js"></script>
+
+    <!-- JS Index -->
+    <script src="./js/quiz.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./plugins/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="./plugins/chart/chart.css">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <link rel="stylesheet" href="./css/toastr.css">
+    <!-- CSS Index -->
+    <link rel="stylesheet" href="./css/quiz.css">
+    <title>Responda nosso questionário</title>
+</head>
+
+<body>
+
+    <br>
+    <div class="container" id="app">
+        <div class="row" v-if="pergunta != null && !endQuiz">
+            <!-- <div class="col-sm-12 text-center">                
+                Tempo restante: <span id="minuto"></span>:<span id="segundo"></span>
+                <br><br>
+            </div> -->
+
+            <div class="col-sm-12 col-md-8 offset-md-2 mt-5">
+                <h3 class="gray-text">
+                    <strong class="titulo_pergunta">
+                        {{ pergunta.pergunta_titulo }}
+                    </strong>
+                </h3>
+            </div>
+
+
+            <div class="col-sm-12 col-md-8 offset-md-2 mt-5">
+
+                <div v-if="pergunta.alternativas != null" v-for="(alt, index) in pergunta.alternativas" :id="'alternativa_' + alt.alternativa_id" class="alternativa pointer row" v-on:click="selecionaQuestao(alt.alternativa_id)">
+                    <div class="col-12">
+                        <div class="row align-items-center">
+                            <div class="col-lg-1 col-2 align-self-start">
+                                <div class="rounded-circle red">
+                                    {{ index + 1 }}
+                                </div>
+                            </div>
+                            <div class="col-lg-11 col-10 alternativa_text ">
+                                <p>
+                                    {{ alt.alternativa_titulo }}
+                                </p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+               <button class="btn btn-success btn-block" v-on:click="confirma()">Confirmar</button>
+
+            </div>
+            <div class="col-sm-12 col-md-2 align-self-end mb-3 text-center">
+                <img src="./img/logo.png" alt="" class="img-responsive" width="100px">
+            </div>
+
+            <div class="col-sm-12">
+                <br><br><br>
+            </div>
+        </div>
+        <div class="row mt-5" v-if="endQuiz">
+            <div class="col-sm-12 text-center">
+                <h3>Obrigado por participar!</h3>
+                <!-- <h5>Veja o índice de respostas desta pergunta</h5> -->
+            </div>
+            <!-- <div class="col-sm-12">
+                <canvas id="myChart" height="100"></canvas>
+            </div> -->
+        </div>
+    </div>
+    
+
+
+    <!-- Constantes -->
+    <script src="./js/constantes.js"></script>
+    <!-- Scripts -->
+    <script src="./plugins/jquery.js"></script>
+    <script src="./plugins/vue.js"></script>
+    <script src="./plugins/bootstrap/bootstrap.js"></script>
+    <script src="./plugins/chart/chart.js"></script>    
+    <script src="./js/toastr.js"></script>
+    
+
+    <!-- JS Index -->
+    <script src="./js/quiz.js"></script>
+</body>
+
+</html>

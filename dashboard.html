@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./plugins/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+
+    <link rel="stylesheet" href="./css/toastr.css">
+    <!-- CSS Index -->
+    <link rel="stylesheet" href="./css/dashboard.css">
+
+    <title>Página Administrativa</title>
+</head>
+
+<body>
+    <div id="app">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+            <a class="navbar-brand"><img src="./img/logo-option-maker.png" width="30"> <strong>OptionMaker</strong></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+
+                    <!-- <li class="nav-item ">
+                        <a class="pointer link-menu nav-link" data-toggle="modal" data-target="#modalReset">
+                            <i class="fa fa-repeat"></i> Resetar Questionário
+                        </a>
+                    </li> -->
+                    <li class="nav-item ">
+                        <a class="pointer nav-link">
+                            &nbsp;&nbsp;
+                            <i class="fa fa-user"></i>
+                            Bem vindo, Admin!
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="pointer nav-link text-danger" v-on:click="logout()">
+                            <i class="fa fa-sign-out"></i> Sair
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+
+        <div class="container">
+            <div class="row pt-5 mt-5">
+                <div class="col-sm-12 col-md-12 pt-2">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <h5 class="card-header">
+                                    <div class="row">
+                                        <div class="col-sm-9">
+                                            <i class="fa fa-list"></i> Perguntas cadastradas
+                                            <!-- <a href="./php/relatorioParticipantesConcluidos.php" target="_blank"
+                                            class="btn btn-danger btn-sm pull-right"> <i class="fa fa-qrcode"></i> </a> -->
+                                        </div>
+                                        <div class="col-sm-3 text-right">
+                                            <a v-on:click="addPergunta()"
+                                                class="btn btn-danger btn-sm text-white btn-block"> <i
+                                                    class="fa fa-plus"></i> Adicionar </a>
+                                        </div>
+                                    </div>
+                                </h5>
+                                <div class="card-body">
+                                    <div class="row" v-if="perguntas != null" v-for="p in perguntas">
+                                        <div class="col-sm-12 col-xs-12 col-lg-2 col-md-2 text-center">
+                                            <img :src="__BASE_URI__ + 'php/renderizaQr.php?qrcode=' + p.pergunta_url"
+                                                alt="" style="width: 100%;">
+                                        </div>
+                                        <div class="col-sm-12 col-xs-12 col-lg-10 col-md-10">
+                                            <h4>{{ p.pergunta_titulo }}</h4>
+                                            <hr>
+                                            <div class="row justify-content-around mt-5">
+                                                <div class="col-sm-12 col-xs-12 col-md-2 col-lg-2">
+                                                    <a :href="__BASE_URI__ + 'alternativas.html?pergunta=' + p.pergunta_id"
+                                                        class="btn btn-danger btn-sm btn-block">
+                                                        <i class="fa fa-list"></i> Alternativas
+                                                    </a>
+                                                </div>
+
+                                                <div class="col-sm-12 col-xs-12 col-md-2 col-lg-2">
+                                                    <a :href="__BASE_URI__ + 'grafico.html?token=' + p.pergunta_url" class="btn btn-danger btn-sm btn-block">
+                                                        <i class="fa fa-chart-bar"></i> Gráfico
+                                                    </a>
+                                                </div>
+                                                <div class="col-sm-12 col-xs-12 col-md-2 col-lg-2">
+                                                    <a :href="__BASE_URI__ + 'php/renderizaQr.php?qrcode=' + p.pergunta_url"
+                                                        class="btn btn-danger btn-sm btn-block">
+                                                        <i class="fa fa-qrcode"></i> Qrcode
+                                                    </a>
+                                                </div>
+                                                <div class="col-sm-12 col-xs-12 col-md-2 col-lg-2">
+                                                    <a href="#" class="btn btn-primary btn-sm btn-block"
+                                                        v-on:click="editPergunta(p)">
+                                                        <i class="fa fa-edit"></i> Editar
+                                                    </a>
+                                                </div>
+                                                <div class="col-sm-12 col-xs-12 col-md-2 col-lg-2">
+                                                    <a href="#" class="btn btn-warning btn-sm btn-block text-white"
+                                                        v-on:click="prepareRemovePergunta(p.pergunta_id)">
+                                                        <i class="fa fa-trash"></i> Remover
+                                                    </a>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <hr>
+                                        </div>
+                                    </div>
+                                    <div class="row" v-if="perguntas == null">
+                                        <div class="col-sm-12">
+                                            <h5>Nenhuma pergunta foi cadastrada</h5>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- modal add -->
+                <div class="modal fade" id="modalAddPergunta" tabindex="-1" role="dialog"
+                    aria-labelledby="modalAddPergunta" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-plus"></i>
+                                    <strong>Adicionar pergunta</strong>
+                                </h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <label for="pergunta_titulo">Título da pergunta</label>
+                                <input type="text" class="form-control" id="pergunta_titulo">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary"
+                                    v-on:click="salvaPergunta()">Salvar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- modal add -->
+                <div class="modal fade" id="modalEditPergunta" tabindex="-1" role="dialog"
+                    aria-labelledby="modalAddPergunta" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-plus"></i>
+                                    <strong>Editar pergunta</strong>
+                                </h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" id="pergunta_id_edit">
+                                <label for="pergunta_titulo_edit">Título da pergunta</label>
+                                <input type="text" class="form-control" id="pergunta_titulo_edit">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary"
+                                    v-on:click="editaPergunta()">Salvar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MODAL REMOVE -->
+                <div class="modal fade" id="modalRemovePergunta" tabindex="-1" role="dialog"
+                    aria-labelledby="modalAddPergunta" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-trash"></i>
+                                    <strong>Remover pergunta</strong>
+                                </h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body text-center">
+                                <h5>Tem certeza de que deseja remover esta pergunta? Essa ação não poderá ser desfeita.
+                                </h5>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary"
+                                    v-on:click="removePergunta()">Remover</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- Scripts -->
+    <script src="./plugins/jquery.js"></script>
+    <script src="./plugins/bootstrap/bootstrap.js"></script>
+    <script src="./plugins/vue.js"></script>
+    <script src="./js/toastr.js"></script>
+    <!-- Constantes -->
+    <script src="./js/constantes.js"></script>
+
+    <!-- Autenticacao -->
+    <script src="./js/autenticacao.js"></script>
+
+    <!-- JS Index -->
+    <script src="./js/dashboard.js"></script>
+</body>
+
+</html>

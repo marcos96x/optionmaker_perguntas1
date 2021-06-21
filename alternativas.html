@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./plugins/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+
+    <link rel="stylesheet" href="./css/toastr.css">
+    <!-- CSS Index -->
+    <link rel="stylesheet" href="./css/dashboard.css">
+
+    <title>Página Administrativa</title>
+    <style>
+        .color-input {
+            height: 35px;
+            border: none;
+            padding: 0;
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        .color-input:focus {
+            box-shadow: 0 0 0 0;
+            border: 0 none;
+            outline: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+            <a class="navbar-brand"><img src="./img/logo-option-maker.png" width="30"> <strong>OptionMaker</strong></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+
+                    <!-- <li class="nav-item ">
+                        <a class="pointer link-menu nav-link" data-toggle="modal" data-target="#modalReset">
+                            <i class="fa fa-repeat"></i> Resetar Questionário
+                        </a>
+                    </li> -->
+                    <li class="nav-item ">
+                        <a class="pointer link-menu nav-link" href="dashboard.html">
+                            <i class="fa fa-arrow-left"></i> Voltar
+                        </a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="pointer nav-link">
+                            &nbsp;&nbsp;
+                            <i class="fa fa-user"></i>
+                            Bem vindo, Admin!
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="pointer nav-link text-danger" v-on:click="logout()">
+                            <i class="fa fa-sign-out"></i> Sair
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+
+        <div class="container">
+            <div class="row pt-5 mt-5">
+                <div class="col-sm-12 col-md-12 pt-2">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <h5 class="card-header">
+                                    <div class="row">
+                                        <div class="col-sm-9">
+                                            <i class="fa fa-list"></i> Alternativas
+                                        </div>
+                                        <div class="col-sm-3 text-right">
+                                            <a v-on:click="addAlternativa()"
+                                                class="btn btn-danger btn-sm text-white btn-block"> <i
+                                                    class="fa fa-plus"></i> Adicionar </a>
+                                        </div>
+                                    </div>
+                                </h5>
+                                <div class="card-body">
+                                    <div class="row" v-if="alternativas != null" v-for="p in alternativas">
+                                        <div class="col-sm-12 col-xs-12 col-lg-1 col-md-1"
+                                            :style="'border-radius: 45px; background-color: ' + p.alternativa_cor">
+                                            &nbsp;
+                                        </div>
+                                        <div class="col-sm-12 col-xs-12 col-md-11 col-lg-11">
+                                            <h4>{{ p.alternativa_titulo }}</h4>
+                                            <hr>
+                                            <div class="row">
+                                                <div class="col-sm-12 col-xs-12 col-md-2 col-lg-2">
+                                                    <a href="#" class="btn btn-primary btn-sm btn-block"
+                                                        v-on:click="editAlternativa(p)">
+                                                        <i class="fa fa-edit"></i> Editar
+                                                    </a>
+                                                </div>
+                                                <div class="col-sm-12 col-xs-12 col-md-2 col-lg-2">
+                                                    <a href="#" class="btn btn-warning btn-sm btn-block text-white"
+                                                        v-on:click="prepareRemovealternativa(p.alternativa_id)">
+                                                        <i class="fa fa-trash"></i> Remover
+                                                    </a>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <hr>
+                                        </div>
+                                    </div>
+                                    <div class="row" v-if="alternativas == null">
+                                        <div class="col-sm-12">
+                                            <h5>Nenhuma alternativa foi cadastrada</h5>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" id="pergunta_id" value="">
+
+
+                <!-- modal add -->
+                <div class="modal fade" id="modalAddalternativa" tabindex="-1" role="dialog"
+                    aria-labelledby="modalAddalternativa" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-plus"></i>
+                                    <strong>Adicionar alternativa</strong>
+                                </h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <label for="alternativa_titulo">Título da alternativa</label>
+                                <input type="text" class="form-control" id="alternativa_titulo">
+                                <br>
+                                <label for="alternativa_cor">Cor da alternativa</label>
+                                <input type="color" class="form-control color-input" id="alternativa_cor">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary"
+                                    v-on:click="salvaAlternativa()">Salvar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- modal add -->
+                <div class="modal fade" id="modalEditalternativa" tabindex="-1" role="dialog"
+                    aria-labelledby="modalAddalternativa" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-plus"></i>
+                                    <strong>Editar alternativa</strong>
+                                </h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" id="alternativa_id_edit">
+                                <label for="alternativa_titulo_edit">Título da alternativa</label>
+                                <input type="text" class="form-control" id="alternativa_titulo_edit">
+                                <br>
+                                <label for="alternativa_cor_edit">Cor da alternativa</label>
+                                <input type="color" class="form-control color-input" id="alternativa_cor_edit">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary"
+                                    v-on:click="editaAlternativa()">Salvar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MODAL REMOVE -->
+                <div class="modal fade" id="modalRemovealternativa" tabindex="-1" role="dialog"
+                    aria-labelledby="modalAddalternativa" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-trash"></i>
+                                    <strong>Remover alternativa</strong>
+                                </h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body text-center">
+                                <h5>Tem certeza de que deseja remover esta alternativa? Essa ação não poderá ser
+                                    desfeita.
+                                </h5>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary"
+                                    v-on:click="removealternativa()">Remover</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- Scripts -->
+    <script src="./plugins/jquery.js"></script>
+    <script src="./plugins/bootstrap/bootstrap.js"></script>
+    <script src="./plugins/vue.js"></script>
+    <script src="./js/toastr.js"></script>
+    <!-- Constantes -->
+    <script src="./js/constantes.js"></script>
+
+    <!-- Autenticacao -->
+    <script src="./js/autenticacao.js"></script>
+
+    <!-- JS Index -->
+    <script src="./js/alternativas.js"></script>
+</body>
+
+</html>
