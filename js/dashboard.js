@@ -3,8 +3,9 @@ var vm = new Vue({
     data: {
         perguntas: null,
         remove: null,
+        usuario_status_optionmaker: localStorage.getItem('usuario_status_optionmaker'),
     },
-    methods: {        
+    methods: {
         listarPerguntas: () => {
             let data = {
                 'action': 'listaPerguntas',
@@ -158,8 +159,8 @@ var vm = new Vue({
         }
     },
     // LifeCicle
-    created: function () {
-        
+    created: function() {
+
         autenticaAdmin();
 
         this.listarPerguntas();

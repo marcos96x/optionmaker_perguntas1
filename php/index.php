@@ -27,7 +27,7 @@ function loginAdmin()
 
         $senha = md5($senha);
         require_once "./DB.php";
-        $res = $db->prepare("SELECT usuario_id FROM usuario WHERE usuario_login = :user AND usuario_senha = :pass");
+        $res = $db->prepare("SELECT usuario_id, usuario_status FROM usuario WHERE usuario_login = :user AND usuario_senha = :pass");
         $res->bindParam(":user", $login, PDO::PARAM_STR);
         $res->bindParam(":pass", $senha, PDO::PARAM_STR);
         $res->execute();
@@ -36,9 +36,10 @@ function loginAdmin()
         if (isset($row[0])) {
             $usuario = [
                 "id" => $row['usuario_id'],
+                "status" => $row['usuario_status'],
             ];
             $_SESSION['__USER__'] = $usuario;
-            echo json_encode(['status' => 200]);
+            echo json_encode(['status' => 200, 'usuario_status' => $row['usuario_status']]);
         } else {
             echo json_encode(['status' => 401]);
         }
@@ -219,12 +220,121 @@ function finalizaQuizPorTempo()
 
 // novo sistema
 
+function listaUsuarios()
+{
+    require_once "./DB.php";
+    $res = $db->prepare("SELECT 
+        usuario_id, usuario_login, usuario_status
+        FROM usuario ORDER BY usuario_id ASC");
+    $res->execute();
+
+    $row = $res->fetchAll();
+
+    unset($db);
+    if (isset($row[0])) {
+        echo json_encode(['status' => 200, 'usuarios' => $row]);
+    } else {
+        echo json_encode(['status' => 404]);
+    }
+    exit;
+}
+
+function salvaUsuario()
+{
+    require_once "./DB.php";
+    $login = addslashes(strip_tags($_POST['login']));
+    $senha = addslashes(strip_tags($_POST['senha']));
+    $status = addslashes(strip_tags($_POST['status']));
+    if (empty($login) || empty($senha)) {
+        echo json_encode(['status' => 400]);
+        exit;
+    }
+
+    $verify = $db->prepare("SELECT * FROM usuario WHERE usuario_login = :login");
+    $verify->bindParam(":login", $login, PDO::PARAM_STR);
+    $verify->execute();
+    $verifyResult = $verify->fetchAll();
+    if(isset($verifyResult[0])) {
+        echo json_encode(['status' => 401]);exit;
+    }
+    $senha = md5($senha);
+    $data = [
+        'login' => $login,
+        'senha' => $senha,
+        'status' => $status
+    ];
+    // Salva pergunta            
+    $res = $db->prepare("INSERT INTO usuario (usuario_login, usuario_senha, usuario_status) VALUES (:login, :senha, :status)");
+    $res->execute($data);
+    unset($db);
+    echo json_encode(['status' => 200]);
+    exit;
+}
+
+function editaUsuario()
+{
+    require_once "./DB.php";
+    $id = intval(addslashes(strip_tags($_POST['id'])));
+    $login = addslashes(strip_tags($_POST['login']));
+    $senha = addslashes(strip_tags($_POST['senha']));
+    $status = addslashes(strip_tags($_POST['status']));
+    if (empty($login) || $id == 0) {
+        echo json_encode(['status' => 400]);
+        exit;
+    }
+
+    $verify = $db->prepare("SELECT * FROM usuario WHERE usuario_login = :login AND usuario_id <> :id");
+    $verify->bindParam(":login", $login, PDO::PARAM_STR);
+    $verify->bindParam(":id", $id, PDO::PARAM_STR);
+    $verify->execute();
+    $verifyResult = $verify->fetchAll();
+    if(isset($verifyResult[0])) {
+        echo json_encode(['status' => 401]);exit;
+    }
+    if(!empty($senha)) {
+        $senha = md5($senha);
+        $res = $db->prepare("UPDATE usuario SET usuario_login = :login, usuario_senha = :senha, usuario_status = :status WHERE usuario_id = :id");    
+        $res->bindParam(":senha", $senha, PDO::PARAM_STR);
+    } else {
+        $res = $db->prepare("UPDATE usuario SET usuario_login = :login, usuario_status = :status WHERE usuario_id = :id");    
+    }
+    $res->bindParam(":login", $login, PDO::PARAM_STR);
+    $res->bindParam(":status", $status, PDO::PARAM_STR);
+    $res->bindParam(":id", $id, PDO::PARAM_STR);
+    $res->execute();
+
+    unset($db);
+    echo json_encode(['status' => 200]);
+    exit;
+}
+
+function removeUsuario()
+{
+    require_once "./DB.php";
+    $id = intval($_POST['id']);
+    if ($id == 0) {
+        echo json_encode(['status' => 400]);
+        exit;
+    }
+    // edita pergunta            
+    $res = $db->prepare("DELETE FROM usuario WHERE usuario_id = :id");
+    $res->bindParam(":id", $id, PDO::PARAM_STR);
+    $res->execute();
+    unset($db);
+    echo json_encode(['status' => 200]);
+    exit;
+}
+
+
+
+
+
 function listaPerguntas()
 {
     require_once "./DB.php";
     $res = $db->prepare("SELECT 
         pergunta_id, pergunta_titulo, pergunta_url
-        FROM pergunta ORDER BY pergunta_id DESC");
+        FROM pergunta ORDER BY pergunta_id ASC");
     $res->execute();
 
     $row = $res->fetchAll();

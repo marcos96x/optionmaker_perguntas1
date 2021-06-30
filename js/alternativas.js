@@ -20,7 +20,7 @@ var vm = new Vue({
                 type: 'POST',
                 data: data
             }).done(res => {
-                
+
                 res = JSON.parse(res);
 
                 if (res.status == undefined) {
@@ -171,16 +171,20 @@ var vm = new Vue({
         }
     },
     // LifeCicle
-    created: function () {
+    created: function() {
         const urlParams = new URLSearchParams(window.location.search);
 
         var pergunta = urlParams.get('pergunta');
 
-        if(pergunta == null) {
+        if (pergunta == null) {
             window.location.href = __BASE_URI__ + "dashboard.html";
         }
-        $("#pergunta_id").val(pergunta);        
+        $("#pergunta_id").val(pergunta);
         autenticaAdmin();
         this.listarAlternativas();
+
+        if (localStorage.getItem('usuario_status_optionmaker') > 1) {
+            window.location.href = __BASE_URI__ + "dashboard.html";
+        }
     }
 })

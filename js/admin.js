@@ -2,11 +2,11 @@ function login() {
     let login = $("#login").val().trim();
     let senha = $("#senha").val().trim();
 
-    if(login == "") {
+    if (login == "") {
         $("#login").attr('placeholder', 'INSIRA SEU LOGIN').focus();
         return false;
     }
-    if(senha == "") {
+    if (senha == "") {
         $("#senha").attr('placeholder', 'INSIRA SUA SENHA').focus();
         return false;
     }
@@ -26,13 +26,14 @@ function login() {
         console.log(res);
         res = JSON.parse(res);
 
-        if(res.status == undefined) {
+        if (res.status == undefined) {
             $.toast("Não foi possível se conectar ao servidor");
             console.log('erro na requisição');
             return false;
         }
 
-        if(res.status == 200) {
+        if (res.status == 200) {
+            localStorage.setItem('usuario_status_optionmaker', res.usuario_status);
             window.location.href = __BASE_URI__ + "dashboard.html";
         } else {
             $.toast("Usuário não encontrado");
@@ -40,15 +41,15 @@ function login() {
     })
 }
 
-$(document).ready(function() {    
-    if(window.location.href.indexOf('?autenticacao=false') != -1) {
+$(document).ready(function() {
+    if (window.location.href.indexOf('?autenticacao=false') != -1) {
         $.toast("Área acessível apenas para pessoas autenticadas!")
     }
     localStorage.clear();
 })
 
-$("#senha, #login").keyup(function(e) {    
-    if(e.keyCode == 13) {
+$("#senha, #login").keyup(function(e) {
+    if (e.keyCode == 13) {
         login();
     }
-}) 
+})

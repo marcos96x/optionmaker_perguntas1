@@ -24,10 +24,9 @@
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-auto">
-
                     <li class="nav-item ">
-                        <a class="pointer link-menu nav-link hide-usuario" href="usuarios.html">
-                            <i class="fa fa-plus"></i>Cadastrar Usuários
+                        <a class="pointer link-menu nav-link" href="dashboard.html">
+                            <i class="fa fa-arrow-left"></i> Voltar
                         </a>
                     </li>
                     <li class="nav-item ">
@@ -47,8 +46,6 @@
         </nav>
 
 
-
-
         <div class="container">
             <div class="row pt-5 mt-5">
                 <div class="col-sm-12 col-md-12 pt-2">
@@ -58,62 +55,49 @@
                                 <h5 class="card-header">
                                     <div class="row">
                                         <div class="col-sm-9">
-                                            <i class="fa fa-list"></i> Perguntas cadastradas
-                                            <!-- <a href="./php/relatorioParticipantesConcluidos.php" target="_blank"
-                                            class="btn btn-danger btn-sm pull-right"> <i class="fa fa-qrcode"></i> </a> -->
+                                            <i class="fa fa-users"></i> Usuários cadastrados
                                         </div>
-                                        <div class="col-sm-3 text-right hide-usuario">
-                                            <a v-on:click="addPergunta()" class="btn btn-danger btn-sm text-white btn-block"> <i class="fa fa-plus"></i> Adicionar </a>
+                                        <div class="col-sm-3 text-right">
+                                            <a v-on:click="addUsuario()" class="btn btn-danger btn-sm text-white btn-block"> <i class="fa fa-plus"></i> Adicionar </a>
                                         </div>
                                     </div>
                                 </h5>
                                 <div class="card-body">
-                                    <div class="row" v-if="perguntas != null" v-for="p in perguntas">
-                                        <div class="col-sm-12 col-xs-12 col-lg-2 col-md-2 text-center">
-                                            <img :src="__BASE_URI__ + 'php/renderizaQr.php?qrcode=' + p.pergunta_url" alt="" style="width: 100%;">
-
+                                    <div class="row" v-if="usuarios != null" v-for="u in usuarios">
+                                        <div class="col-sm-12 col-xs-12 col-md-3 col-lg-3">
+                                            <h4>ID</h4>
+                                            <b>{{ u.usuario_id }}</b>
                                         </div>
-                                        <div class="col-sm-12 col-xs-12 col-lg-10 col-md-10">
-                                            <h4>{{ p.pergunta_titulo }}</h4>
-                                            <hr>
-                                            <div class="row justify-content-around mt-5">
-                                                <div class="col-sm-12 col-xs-12 col-md-2 col-lg-2" v-if="usuario_status_optionmaker == 1">
-                                                    <a :href="__BASE_URI__ + 'alternativas.html?pergunta=' + p.pergunta_id" class="btn btn-danger btn-sm btn-block">
-                                                        <i class="fa fa-list"></i> Alternativas
-                                                    </a>
-                                                </div>
-
-                                                <div class="col-sm-12 col-xs-12 col-md-2 col-lg-2">
-                                                    <a :href="__BASE_URI__ + 'grafico.html?token=' + p.pergunta_url" class="btn btn-danger btn-sm btn-block">
-                                                        <i class="fa fa-chart-bar"></i> Gráfico
-                                                    </a>
-                                                </div>
-                                                <div class="col-sm-12 col-xs-12 col-md-2 col-lg-2">
-                                                    <a :href="__BASE_URI__ + 'php/renderizaQr.php?qrcode=' + p.pergunta_url" class="btn btn-danger btn-sm btn-block">
-                                                        <i class="fa fa-qrcode"></i> Qrcode
-                                                    </a>
-                                                </div>
-                                                <div class="col-sm-12 col-xs-12 col-md-2 col-lg-2 hide-usuario" v-if="usuario_status_optionmaker == 1">
-                                                    <a href="#" class="btn btn-primary btn-sm btn-block hide-usuario" v-on:click="editPergunta(p)">
-                                                        <i class="fa fa-edit"></i> Editar
-                                                    </a>
-                                                </div>
-                                                <div class="col-sm-12 col-xs-12 col-md-2 col-lg-2 hide-usuario" v-if="usuario_status_optionmaker == 1">
-                                                    <a href="#" class="btn btn-warning btn-sm btn-block text-white hide-usuario" v-on:click="prepareRemovePergunta(p.pergunta_id)">
-                                                        <i class="fa fa-trash"></i> Remover
-                                                    </a>
-                                                </div>
-                                            </div>
-
-
+                                        <div class="col-sm-12 col-xs-12 col-md-3 col-lg-3">
+                                            <h4>Login</h4>
+                                            <b>{{ u.usuario_login }}</b>
+                                        </div>
+                                        <div class="col-sm-12 col-xs-12 col-md-3 col-lg-3">
+                                            <h4>Status</h4>
+                                            <b>
+                                                <span v-if="u.usuario_status == 2">
+                                                    Apenas visualização
+                                                </span>
+                                                <span v-if="u.usuario_status == 1">
+                                                    Total
+                                                </span>
+                                            </b>
+                                        </div>
+                                        <div class="col-sm-12 col-xs-12 col-md-3 col-lg-3 align-self-start">
+                                            <a href="#" class="btn btn-primary btn-sm btn-block" v-on:click="editUsuario(u)">
+                                                <i class="fa fa-edit"></i> Editar
+                                            </a>
+                                            <a href="#" class="btn btn-warning btn-sm btn-block text-white" v-on:click="prepareRemoveUsuario(u.usuario_id)">
+                                                <i class="fa fa-trash"></i> Remover
+                                            </a>
                                         </div>
                                         <div class="col-sm-12">
                                             <hr>
                                         </div>
                                     </div>
-                                    <div class="row" v-if="perguntas == null">
+                                    <div class="row" v-if="usuarios == null">
                                         <div class="col-sm-12">
-                                            <h5>Nenhuma pergunta foi cadastrada</h5>
+                                            <h5>Nenhum usuário cadastrado</h5>
                                         </div>
                                     </div>
 
@@ -125,73 +109,100 @@
 
 
                 <!-- modal add -->
-                <div class="modal fade" id="modalAddPergunta" tabindex="-1" role="dialog" aria-labelledby="modalAddPergunta" aria-hidden="true">
+                <div class="modal fade" id="modalAddUsuario" tabindex="-1" role="dialog" aria-labelledby="modalAddUsuario" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-plus"></i>
-                                    <strong>Adicionar pergunta</strong>
+                                    <strong>Adicionar usuário</strong>
                                 </h4>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <label for="pergunta_titulo">Título da pergunta</label>
-                                <input type="text" class="form-control" id="pergunta_titulo">
+                                <label for="usuario_login">Login</label>
+                                <input type="text" class="form-control" id="usuario_login">
+                                <br>
+                                <label for="usuario_senha">Senha</label>
+                                <input type="password" class="form-control" id="usuario_senha">
+                                <br>
+                                <label for="usuario_confirma_senha">Confirme sua senha</label>
+                                <input type="password" class="form-control" id="usuario_confirma_senha">
+                                <br>
+                                <label for="usuario_status">Permissões</label>
+                                <select id="usuario_status" class="form-control">
+                                    <option value="1">Total</option>
+                                    <option value="2">Apenas visualização</option>
+                                </select>
+
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <button type="button" class="btn btn-primary" v-on:click="salvaPergunta()">Salvar</button>
+                                <button type="button" class="btn btn-primary" v-on:click="salvaUsuario()">Salvar</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- modal add -->
-                <div class="modal fade" id="modalEditPergunta" tabindex="-1" role="dialog" aria-labelledby="modalAddPergunta" aria-hidden="true">
+                <div class="modal fade" id="modalEditUsuario" tabindex="-1" role="dialog" aria-labelledby="modalAddUsuario" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-plus"></i>
-                                    <strong>Editar pergunta</strong>
+                                    <strong>Editar usuário</strong>
+                                    <br>
+                                    <small><i class="fa fa-info-circle"></i> Preencha as senhas apenas se for alterar</small>
                                 </h4>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <input type="hidden" id="pergunta_id_edit">
-                                <label for="pergunta_titulo_edit">Título da pergunta</label>
-                                <input type="text" class="form-control" id="pergunta_titulo_edit">
+                                <input type="hidden" id="usuario_id_edit">
+                                <label for="usuario_login_edit">Login</label>
+                                <input type="text" class="form-control" id="usuario_login_edit">
+                                <br>
+                                <label for="usuario_senha_edit">Senha</label>
+                                <input type="password" class="form-control" id="usuario_senha_edit">
+                                <br>
+                                <label for="usuario_confirma_senha_edit">Confirme sua senha</label>
+                                <input type="password" class="form-control" id="usuario_confirma_senha_edit">
+                                <br>
+                                <label for="usuario_status_edit">Permissões</label>
+                                <select id="usuario_status_edit" class="form-control">
+                                    <option value="1">Total</option>
+                                    <option value="2">Apenas visualização</option>
+                                </select>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <button type="button" class="btn btn-primary" v-on:click="editaPergunta()">Salvar</button>
+                                <button type="button" class="btn btn-primary" v-on:click="editaUsuario()">Salvar</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- MODAL REMOVE -->
-                <div class="modal fade" id="modalRemovePergunta" tabindex="-1" role="dialog" aria-labelledby="modalAddPergunta" aria-hidden="true">
+                <div class="modal fade" id="modalRemoveUsuario" tabindex="-1" role="dialog" aria-labelledby="modalAddPergunta" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-trash"></i>
-                                    <strong>Remover pergunta</strong>
+                                    <strong>Remover usuário</strong>
                                 </h4>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body text-center">
-                                <h5>Tem certeza de que deseja remover esta pergunta? Essa ação não poderá ser desfeita.
+                                <h5>Tem certeza de que deseja remover este usuário? Essa ação não poderá ser desfeita.
                                 </h5>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <button type="button" class="btn btn-primary" v-on:click="removePergunta()">Remover</button>
+                                <button type="button" class="btn btn-primary" v-on:click="removeUsuário()">Remover</button>
                             </div>
                         </div>
                     </div>
@@ -215,14 +226,7 @@
     <script src="./js/autenticacao.js"></script>
 
     <!-- JS Index -->
-    <script src="./js/dashboard.js"></script>
-
-
-    <script>
-        if (localStorage.getItem('usuario_status_optionmaker') > 1) {
-            $(".hide-usuario").hide();
-        }
-    </script>
+    <script src="./js/usuarios.js"></script>
 </body>
 
 </html>
