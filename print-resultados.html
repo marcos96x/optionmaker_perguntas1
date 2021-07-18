@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./plugins/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="./plugins/chart/chart.css">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <link rel="stylesheet" href="./css/toastr.css">
+    <!-- CSS Index -->
+    <link rel="stylesheet" href="./css/quiz.css">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+         ::selection {
+            color: #fff;
+            background: #6665ee;
+        }
+        
+        .skill-bars {
+            padding: 25px 30px;
+            width: 100%;
+            background: #fff;
+            box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+        
+        .skill-bars .bar {
+            margin: 20px 0;
+        }
+        
+        .skill-bars .bar:first-child {
+            margin-top: 0px;
+        }
+        
+        .skill-bars .bar .info {
+            margin-bottom: 5px;
+        }
+        
+        .skill-bars .bar .info span {
+            font-weight: 500;
+            font-size: 17px;
+            opacity: 0;
+            animation: showText 0.5s 1s linear forwards;
+        }
+        
+        @keyframes showText {
+            100% {
+                opacity: 1;
+            }
+        }
+        
+        .skill-bars .bar .progress-line {
+            height: 25px;
+            width: 100%;
+            background: #f0f0f0;
+            position: relative;
+            transform: scaleX(0);
+            transform-origin: left;
+            border-radius: 10px;
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05), 0 1px rgba(255, 255, 255, 0.8);
+            animation: animate 1s cubic-bezier(1, 0, 0.5, 1) forwards;
+        }
+        
+        @keyframes animate {
+            100% {
+                transform: scaleX(1);
+            }
+        }
+        
+        .bar .progress-line span {
+            height: 100%;
+            position: absolute;
+            border-radius: 10px;
+            transform: scaleX(0);
+            transform-origin: left;
+            background: #6665ee;
+            animation: animate 1s 1s cubic-bezier(1, 0, 0.5, 1) forwards;
+        }
+        
+        @keyframes showText2 {
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+    <title>Imprimir resultados</title>
+</head>
+
+<body>
+
+    <br>
+    <div class="container" id="app">
+        <div class="row">
+            <div class="col-sm-12">
+                <h4>Resultado das questões</h4>
+            </div>
+        </div>
+        <div class="row mt-5" v-if="perguntas != null" v-for="p in perguntas">
+            <div class="col-sm-12" v-if="p.pergunta_titulo != null">
+                <h3>{{ p.pergunta_titulo }}</h3>
+            </div>
+            <div class="col-sm-12">
+                <!-- <canvas id="myChart" height="100"></canvas> -->
+
+                <div class="skill-bars">
+                    <!-- alternativa -->
+                    <div class="bar" v-if="p.alternativas != null" v-for="(alt, i) in p.alternativas">
+                        <div class="info">
+                            <h5>{{ i + 1 }}. {{ alt.alternativa_titulo }} <b> ({{ !isNaN(alt.alternativa_escolhas) && Number(alt.alternativa_escolhas) > 0 ? Number(Number(alt.alternativa_escolhas) / Number(alt.alternativa_total) * 100).toFixed(0) : 0 }}%)</b></h5>
+                        </div>
+                        <div class="progress-line">
+                            <span :style="'width: ' + (!isNaN(alt.alternativa_escolhas) && Number(alt.alternativa_escolhas) > 0 ? Number(alt.alternativa_escolhas) / Number(alt.alternativa_total) * 100 : 0) + '%;  background-color: ' + alt.alternativa_cor">  </span>
+                        </div>
+                    </div>
+                    <!-- alternativa -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Constantes -->
+    <script src="./js/constantes.js"></script>
+    <!-- Scripts -->
+    <script src="./plugins/jquery.js"></script>
+    <script src="./plugins/vue.js"></script>
+    <script src="./plugins/bootstrap/bootstrap.js"></script>
+    <script src="./plugins/chart/chart.js"></script>
+    <script src="./js/toastr.js"></script>
+
+
+    <!-- JS Index -->
+    <script src="./js/print.js"></script>
+
+
+</body>
+
+</html>

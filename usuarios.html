@@ -16,65 +16,74 @@
 
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-            <a class="navbar-brand"><img src="./img/logo-option-maker.png" width="30"> <strong>OptionMaker</strong></a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div id="loading">
+            <div class="row">
+                <div class="col-sm-12 text-center mt-5">
+                    <br><br>
+                    <img src="./img/loading.gif" alt=""> <br>
+                </div>
+            </div>
+        </div>
+        <div id="no-loading" class="d-none">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+                <a class="navbar-brand"><img src="./img/logo-option-maker.png" width="30"> <strong>OptionMaker</strong></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item ">
-                        <a class="pointer link-menu nav-link" href="dashboard.html">
-                            <i class="fa fa-arrow-left"></i> Voltar
-                        </a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="pointer nav-link">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item ">
+                            <a class="pointer link-menu nav-link" href="dashboard.html">
+                                <i class="fa fa-arrow-left"></i> Voltar
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="pointer nav-link">
                             &nbsp;&nbsp;
                             <i class="fa fa-user"></i>
-                            Bem vindo, Admin!
+                            Bem vindo, <span id="nome_usuario"></span>!
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="pointer nav-link text-danger" v-on:click="logout()">
-                            <i class="fa fa-sign-out"></i> Sair
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+                        </li>
+                        <li class="nav-item">
+                            <a class="pointer nav-link text-danger" v-on:click="logout()">
+                                <i class="fa fa-sign-out"></i> Sair
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
 
 
-        <div class="container">
-            <div class="row pt-5 mt-5">
-                <div class="col-sm-12 col-md-12 pt-2">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="card">
-                                <h5 class="card-header">
-                                    <div class="row">
-                                        <div class="col-sm-9">
-                                            <i class="fa fa-users"></i> Usuários cadastrados
+            <div class="container">
+                <div class="row pt-5 mt-5">
+                    <div class="col-sm-12 col-md-12 pt-2">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <h5 class="card-header">
+                                        <div class="row">
+                                            <div class="col-sm-9">
+                                                <i class="fa fa-users"></i> Usuários cadastrados
+                                            </div>
+                                            <div class="col-sm-3 text-right">
+                                                <a v-on:click="addUsuario()" class="btn btn-danger btn-sm text-white btn-block"> <i class="fa fa-plus"></i> Adicionar </a>
+                                            </div>
                                         </div>
-                                        <div class="col-sm-3 text-right">
-                                            <a v-on:click="addUsuario()" class="btn btn-danger btn-sm text-white btn-block"> <i class="fa fa-plus"></i> Adicionar </a>
-                                        </div>
-                                    </div>
-                                </h5>
-                                <div class="card-body">
-                                    <div class="row" v-if="usuarios != null" v-for="u in usuarios">
-                                        <div class="col-sm-12 col-xs-12 col-md-3 col-lg-3">
-                                            <h4>ID</h4>
-                                            <b>{{ u.usuario_id }}</b>
-                                        </div>
-                                        <div class="col-sm-12 col-xs-12 col-md-3 col-lg-3">
-                                            <h4>Login</h4>
-                                            <b>{{ u.usuario_login }}</b>
-                                        </div>
-                                        <div class="col-sm-12 col-xs-12 col-md-3 col-lg-3">
-                                            <h4>Status</h4>
-                                            <b>
+                                    </h5>
+                                    <div class="card-body">
+                                        <div class="row" v-if="usuarios != null" v-for="u in usuarios">
+                                            <div class="col-sm-12 col-xs-12 col-md-3 col-lg-3">
+                                                <h4>ID</h4>
+                                                <b>{{ u.usuario_id }}</b>
+                                            </div>
+                                            <div class="col-sm-12 col-xs-12 col-md-3 col-lg-3">
+                                                <h4>Login</h4>
+                                                <b>{{ u.usuario_login }}</b>
+                                            </div>
+                                            <div class="col-sm-12 col-xs-12 col-md-3 col-lg-3">
+                                                <h4>Status</h4>
+                                                <b>
                                                 <span v-if="u.usuario_status == 2">
                                                     Apenas visualização
                                                 </span>
@@ -82,127 +91,128 @@
                                                     Total
                                                 </span>
                                             </b>
+                                            </div>
+                                            <div class="col-sm-12 col-xs-12 col-md-3 col-lg-3 align-self-start">
+                                                <a href="#" class="btn btn-primary btn-sm btn-block" v-on:click="editUsuario(u)">
+                                                    <i class="fa fa-edit"></i> Editar
+                                                </a>
+                                                <a href="#" class="btn btn-warning btn-sm btn-block text-white" v-on:click="prepareRemoveUsuario(u.usuario_id)">
+                                                    <i class="fa fa-trash"></i> Remover
+                                                </a>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <hr>
+                                            </div>
                                         </div>
-                                        <div class="col-sm-12 col-xs-12 col-md-3 col-lg-3 align-self-start">
-                                            <a href="#" class="btn btn-primary btn-sm btn-block" v-on:click="editUsuario(u)">
-                                                <i class="fa fa-edit"></i> Editar
-                                            </a>
-                                            <a href="#" class="btn btn-warning btn-sm btn-block text-white" v-on:click="prepareRemoveUsuario(u.usuario_id)">
-                                                <i class="fa fa-trash"></i> Remover
-                                            </a>
+                                        <div class="row" v-if="usuarios == null">
+                                            <div class="col-sm-12">
+                                                <h5>Nenhum usuário cadastrado</h5>
+                                            </div>
                                         </div>
-                                        <div class="col-sm-12">
-                                            <hr>
-                                        </div>
-                                    </div>
-                                    <div class="row" v-if="usuarios == null">
-                                        <div class="col-sm-12">
-                                            <h5>Nenhum usuário cadastrado</h5>
-                                        </div>
-                                    </div>
 
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
 
-                <!-- modal add -->
-                <div class="modal fade" id="modalAddUsuario" tabindex="-1" role="dialog" aria-labelledby="modalAddUsuario" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-plus"></i>
-                                    <strong>Adicionar usuário</strong>
-                                </h4>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <!-- modal add -->
+                    <div class="modal fade" id="modalAddUsuario" tabindex="-1" role="dialog" aria-labelledby="modalAddUsuario" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-plus"></i>
+                                        <strong>Adicionar usuário</strong>
+                                    </h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
-                            </div>
-                            <div class="modal-body">
-                                <label for="usuario_login">Login</label>
-                                <input type="text" class="form-control" id="usuario_login">
-                                <br>
-                                <label for="usuario_senha">Senha</label>
-                                <input type="password" class="form-control" id="usuario_senha">
-                                <br>
-                                <label for="usuario_confirma_senha">Confirme sua senha</label>
-                                <input type="password" class="form-control" id="usuario_confirma_senha">
-                                <br>
-                                <label for="usuario_status">Permissões</label>
-                                <select id="usuario_status" class="form-control">
-                                    <option value="1">Total</option>
-                                    <option value="2">Apenas visualização</option>
-                                </select>
-
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <button type="button" class="btn btn-primary" v-on:click="salvaUsuario()">Salvar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- modal add -->
-                <div class="modal fade" id="modalEditUsuario" tabindex="-1" role="dialog" aria-labelledby="modalAddUsuario" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-plus"></i>
-                                    <strong>Editar usuário</strong>
+                                </div>
+                                <div class="modal-body">
+                                    <label for="usuario_login">Login</label>
+                                    <input type="text" class="form-control" id="usuario_login">
                                     <br>
-                                    <small><i class="fa fa-info-circle"></i> Preencha as senhas apenas se for alterar</small>
-                                </h4>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <input type="hidden" id="usuario_id_edit">
-                                <label for="usuario_login_edit">Login</label>
-                                <input type="text" class="form-control" id="usuario_login_edit">
-                                <br>
-                                <label for="usuario_senha_edit">Senha</label>
-                                <input type="password" class="form-control" id="usuario_senha_edit">
-                                <br>
-                                <label for="usuario_confirma_senha_edit">Confirme sua senha</label>
-                                <input type="password" class="form-control" id="usuario_confirma_senha_edit">
-                                <br>
-                                <label for="usuario_status_edit">Permissões</label>
-                                <select id="usuario_status_edit" class="form-control">
+                                    <label for="usuario_senha">Senha</label>
+                                    <input type="password" class="form-control" id="usuario_senha">
+                                    <br>
+                                    <label for="usuario_confirma_senha">Confirme sua senha</label>
+                                    <input type="password" class="form-control" id="usuario_confirma_senha">
+                                    <br>
+                                    <label for="usuario_status">Permissões</label>
+                                    <select id="usuario_status" class="form-control">
                                     <option value="1">Total</option>
                                     <option value="2">Apenas visualização</option>
                                 </select>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <button type="button" class="btn btn-primary" v-on:click="editaUsuario()">Salvar</button>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                    <button type="button" class="btn btn-primary" v-on:click="salvaUsuario()">Salvar</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- MODAL REMOVE -->
-                <div class="modal fade" id="modalRemoveUsuario" tabindex="-1" role="dialog" aria-labelledby="modalAddPergunta" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-trash"></i>
-                                    <strong>Remover usuário</strong>
-                                </h4>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <!-- modal add -->
+                    <div class="modal fade" id="modalEditUsuario" tabindex="-1" role="dialog" aria-labelledby="modalAddUsuario" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-plus"></i>
+                                        <strong>Editar usuário</strong>
+                                        <br>
+                                        <small><i class="fa fa-info-circle"></i> Preencha as senhas apenas se for alterar</small>
+                                    </h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="hidden" id="usuario_id_edit">
+                                    <label for="usuario_login_edit">Login</label>
+                                    <input type="text" class="form-control" id="usuario_login_edit">
+                                    <br>
+                                    <label for="usuario_senha_edit">Senha</label>
+                                    <input type="password" class="form-control" id="usuario_senha_edit">
+                                    <br>
+                                    <label for="usuario_confirma_senha_edit">Confirme sua senha</label>
+                                    <input type="password" class="form-control" id="usuario_confirma_senha_edit">
+                                    <br>
+                                    <label for="usuario_status_edit">Permissões</label>
+                                    <select id="usuario_status_edit" class="form-control">
+                                    <option value="1">Total</option>
+                                    <option value="2">Apenas visualização</option>
+                                </select>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                    <button type="button" class="btn btn-primary" v-on:click="editaUsuario()">Salvar</button>
+                                </div>
                             </div>
-                            <div class="modal-body text-center">
-                                <h5>Tem certeza de que deseja remover este usuário? Essa ação não poderá ser desfeita.
-                                </h5>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <button type="button" class="btn btn-primary" v-on:click="removeUsuário()">Remover</button>
+                        </div>
+                    </div>
+
+                    <!-- MODAL REMOVE -->
+                    <div class="modal fade" id="modalRemoveUsuario" tabindex="-1" role="dialog" aria-labelledby="modalAddPergunta" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-trash"></i>
+                                        <strong>Remover usuário</strong>
+                                    </h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <h5>Tem certeza de que deseja remover este usuário? Essa ação não poderá ser desfeita.
+                                    </h5>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                    <button type="button" class="btn btn-primary" v-on:click="removeUsuário()">Remover</button>
+                                </div>
                             </div>
                         </div>
                     </div>

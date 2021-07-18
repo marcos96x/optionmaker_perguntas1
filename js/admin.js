@@ -34,6 +34,7 @@ function login() {
 
         if (res.status == 200) {
             localStorage.setItem('usuario_status_optionmaker', res.usuario_status);
+            localStorage.setItem('usuario_login_optionmaker', res.usuario_login);
             window.location.href = __BASE_URI__ + "dashboard.html";
         } else {
             $.toast("Usuário não encontrado");

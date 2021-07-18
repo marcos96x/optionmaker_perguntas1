@@ -7,6 +7,7 @@ var vm = new Vue({
     },
     methods: {
         listarPerguntas: () => {
+            show_loading();
             let data = {
                 'action': 'listaPerguntas',
             };
@@ -16,7 +17,7 @@ var vm = new Vue({
                 data: data
             }).done(res => {
                 res = JSON.parse(res);
-
+                hide_loading();
                 if (res.status == undefined) {
                     console.log('erro na requisição');
                     return false;

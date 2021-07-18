@@ -11,6 +11,7 @@ var vm = new Vue({
             vm.pergunta_id = id;
         },
         listarAlternativas: () => {
+            show_loading();
             let data = {
                 'action': 'listarAlternativas',
                 'pergunta': $("#pergunta_id").val()
@@ -20,7 +21,7 @@ var vm = new Vue({
                 type: 'POST',
                 data: data
             }).done(res => {
-
+                hide_loading();
                 res = JSON.parse(res);
 
                 if (res.status == undefined) {

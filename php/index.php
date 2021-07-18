@@ -27,7 +27,7 @@ function loginAdmin()
 
         $senha = md5($senha);
         require_once "./DB.php";
-        $res = $db->prepare("SELECT usuario_id, usuario_status FROM usuario WHERE usuario_login = :user AND usuario_senha = :pass");
+        $res = $db->prepare("SELECT usuario_id, usuario_status, usuario_login FROM usuario WHERE usuario_login = :user AND usuario_senha = :pass");
         $res->bindParam(":user", $login, PDO::PARAM_STR);
         $res->bindParam(":pass", $senha, PDO::PARAM_STR);
         $res->execute();
@@ -39,7 +39,7 @@ function loginAdmin()
                 "status" => $row['usuario_status'],
             ];
             $_SESSION['__USER__'] = $usuario;
-            echo json_encode(['status' => 200, 'usuario_status' => $row['usuario_status']]);
+            echo json_encode(['status' => 200, 'usuario_status' => $row['usuario_status'], 'usuario_login' => $row['usuario_login']]);
         } else {
             echo json_encode(['status' => 401]);
         }
@@ -72,6 +72,33 @@ function autenticaAdmin()
         echo json_encode(['status' => 200]);
     }
     exit;
+}
+
+function getNextPrev() {
+    require_once "./DB.php";
+    $token = strip_tags(addslashes($_POST['token']));
+    // next select * from foo where id = (select min(id) from foo where id > 4)
+    // prev select * from foo where id = (select max(id) from foo where id < 4)
+
+    $tokenNext = null;
+    $tokenPrev = null;
+    // next
+    $res = $db->prepare("SELECT pergunta_url FROM pergunta WHERE pergunta_id > (SELECT pergunta_id FROM pergunta WHERE pergunta_url = :token) ORDER BY pergunta_id ASC LIMIT 1");
+    $res->bindParam(":token", $token, PDO::PARAM_STR);
+    $res->execute();
+    $row = $res->fetchAll();
+    if(isset($row[0])) {
+        $tokenNext = $row[0];
+    }
+    // prev
+    $res = $db->prepare("SELECT pergunta_url FROM pergunta WHERE pergunta_id < (SELECT pergunta_id FROM pergunta WHERE pergunta_url = :token) ORDER BY pergunta_id DESC LIMIT 1");
+    $res->bindParam(":token", $token, PDO::PARAM_STR);
+    $res->execute();
+    $row = $res->fetchAll();
+    if(isset($row[0])) {
+        $tokenPrev = $row[0];
+    }
+    echo json_encode(['status' => 200, 'tokenPrev' => $tokenPrev, 'tokenNext' => $tokenNext]);
 }
 
 function getPerguntaForGrafico()
@@ -254,8 +281,9 @@ function salvaUsuario()
     $verify->bindParam(":login", $login, PDO::PARAM_STR);
     $verify->execute();
     $verifyResult = $verify->fetchAll();
-    if(isset($verifyResult[0])) {
-        echo json_encode(['status' => 401]);exit;
+    if (isset($verifyResult[0])) {
+        echo json_encode(['status' => 401]);
+        exit;
     }
     $senha = md5($senha);
     $data = [
@@ -288,15 +316,16 @@ function editaUsuario()
     $verify->bindParam(":id", $id, PDO::PARAM_STR);
     $verify->execute();
     $verifyResult = $verify->fetchAll();
-    if(isset($verifyResult[0])) {
-        echo json_encode(['status' => 401]);exit;
+    if (isset($verifyResult[0])) {
+        echo json_encode(['status' => 401]);
+        exit;
     }
-    if(!empty($senha)) {
+    if (!empty($senha)) {
         $senha = md5($senha);
-        $res = $db->prepare("UPDATE usuario SET usuario_login = :login, usuario_senha = :senha, usuario_status = :status WHERE usuario_id = :id");    
+        $res = $db->prepare("UPDATE usuario SET usuario_login = :login, usuario_senha = :senha, usuario_status = :status WHERE usuario_id = :id");
         $res->bindParam(":senha", $senha, PDO::PARAM_STR);
     } else {
-        $res = $db->prepare("UPDATE usuario SET usuario_login = :login, usuario_status = :status WHERE usuario_id = :id");    
+        $res = $db->prepare("UPDATE usuario SET usuario_login = :login, usuario_status = :status WHERE usuario_id = :id");
     }
     $res->bindParam(":login", $login, PDO::PARAM_STR);
     $res->bindParam(":status", $status, PDO::PARAM_STR);
@@ -326,6 +355,33 @@ function removeUsuario()
 }
 
 
+function listaPerguntasPrint()
+{
+    require_once "./DB.php";
+    $res = $db->prepare("SELECT 
+        pergunta_id, pergunta_titulo, pergunta_url
+        FROM pergunta ORDER BY pergunta_id ASC");
+    $res->execute();
+
+    $perguntas = $res->fetchAll();
+
+    if (isset($perguntas[0])) {
+        foreach ($perguntas as $k => $v) {
+            // $perguntas['alternativas'] = 
+            $res = $db->prepare("SELECT *, (SELECT SUM(alternativa_escolhas) FROM alternativa WHERE alternativa_pergunta = :pergunta) AS alternativa_total FROM alternativa WHERE alternativa_pergunta = :pergunta");
+            $res->bindParam(":pergunta", $perguntas[$k]['pergunta_id'], PDO::PARAM_STR);
+            $res->execute();
+
+            $row = $res->fetchAll();
+            $perguntas[$k]['alternativas'] = $row;
+        }
+        echo json_encode(['status' => 200, 'perguntas' => $perguntas]);
+    } else {
+        echo json_encode(['status' => 404]);
+    }
+    unset($db);
+    exit;
+}
 
 
 
@@ -372,7 +428,7 @@ function salvaPergunta()
     $dir = explode(DIRECTORY_SEPARATOR . "php" . DIRECTORY_SEPARATOR, $dir);
     $dir = explode(DIRECTORY_SEPARATOR . "php", $dir[0]);
     $base = $dir[0] . DIRECTORY_SEPARATOR . 'qrcodes';
-    
+
     @system("sudo chmod -R 777 $base");
     QRcode::png($qrCodeName, $base . DIRECTORY_SEPARATOR . $token . '.png', QR_ECLEVEL_L, 10);
     echo json_encode(['status' => 200]);
