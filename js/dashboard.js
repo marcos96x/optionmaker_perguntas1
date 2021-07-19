@@ -3,6 +3,7 @@ var vm = new Vue({
     data: {
         perguntas: null,
         remove: null,
+        pasta_id: null,
         usuario_status_optionmaker: localStorage.getItem('usuario_status_optionmaker'),
     },
     methods: {
@@ -10,6 +11,7 @@ var vm = new Vue({
             show_loading();
             let data = {
                 'action': 'listaPerguntas',
+                'pasta': $("#pasta_id").val()
             };
             $.ajax({
                 url: __BASE_API__,
@@ -46,6 +48,7 @@ var vm = new Vue({
                 'action': 'editaPergunta',
                 'titulo': titulo,
                 'id': id,
+                'pasta': $("#pasta_id").val()
             };
 
             $.ajax({
@@ -74,7 +77,8 @@ var vm = new Vue({
             let titulo = $("#pergunta_titulo").val();
             let data = {
                 'action': 'salvaPergunta',
-                'titulo': titulo
+                'titulo': titulo,
+                'pasta': $("#pasta_id").val()
             };
 
             $.ajax({
@@ -161,7 +165,16 @@ var vm = new Vue({
     },
     // LifeCicle
     created: function() {
+        const urlParams = new URLSearchParams(window.location.search);
 
+        var pasta = urlParams.get('pasta');
+
+        if (pasta == null) {
+            window.location.href = __BASE_URI__ + "pastas.html";
+        }
+        $("#pasta_id").val(pasta);
+        this.pasta_id = pasta;
+        $("#btn-print").attr('href', 'print-resultados.html?pasta=' + pasta)
         autenticaAdmin();
 
         this.listarPerguntas();

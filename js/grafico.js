@@ -6,6 +6,7 @@ var vm = new Vue({
         alternativas: null,
         tokenNext: null,
         tokenPrev: null,
+        pasta_id: null,
     },
     methods: {
         getPrevNext: function() {
@@ -87,6 +88,10 @@ var vm = new Vue({
     // LifeCicle
     created: function() {
         this.getToken();
+        const urlParams = new URLSearchParams(window.location.search);
+        var pasta = urlParams.get('pasta');
+        this.pasta_id = pasta;
+        $("#btn_voltar").attr('href', 'dashboard.html?pasta=' + pasta);
     }
 })
 

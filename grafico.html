@@ -117,11 +117,11 @@
                             <i class="fa fa-repeat"></i> Resetar Questionário
                         </a>
                     </li> -->
-                        <li class="nav-item ">
-                            <a class="pointer link-menu nav-link" href="dashboard.html">
-                                <i class="fa fa-arrow-left"></i> Voltar
-                            </a>
-                        </li>
+                    <li class="nav-item ">
+                        <a class="pointer link-menu nav-link" id="btn_voltar" href="dashboard.html">
+                            <i class="fa fa-arrow-left"></i> Voltar
+                        </a>
+                    </li>
                         <li class="nav-item ">
                             <a class="pointer nav-link">
                             &nbsp;&nbsp;
@@ -142,7 +142,7 @@
                     <h3>{{ pergunta_titulo }}</h3>
                 </div>
                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 align-self-center">
-                    <a v-if="tokenPrev != null" :href="__BASE_URI__ + 'grafico.html?token=' + tokenPrev.pergunta_url" class="btn btn-danger btn-block"><i class="fa fa-chevron-left"></i></a>
+                    <a v-if="tokenPrev != null" :href="__BASE_URI__ + 'grafico.html?token=' + tokenPrev.pergunta_url + '&pasta=' + pasta_id" class="btn btn-danger btn-block"><i class="fa fa-chevron-left"></i></a>
                 </div>
                 <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                     <!-- <canvas id="myChart" height="100"></canvas> -->
@@ -161,7 +161,7 @@
                     </div>
                 </div>
                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 align-self-center">
-                    <a v-if="tokenNext != null" :href="__BASE_URI__ + 'grafico.html?token=' + tokenNext.pergunta_url" class="btn btn-danger btn-block"><i class="fa fa-chevron-right"></i></a>
+                    <a v-if="tokenNext != null" :href="__BASE_URI__ + 'grafico.html?token=' + tokenNext.pergunta_url + '&pasta=' + pasta_id" class="btn btn-danger btn-block"><i class="fa fa-chevron-right"></i></a>
                 </div>
             </div>
         </div>

@@ -187,5 +187,9 @@ var vm = new Vue({
         if (localStorage.getItem('usuario_status_optionmaker') > 1) {
             window.location.href = __BASE_URI__ + "dashboard.html";
         }
+
+        var pasta = urlParams.get('pasta');
+        $("#btn_voltar").attr('href', 'dashboard.html?pasta=' + pasta);
+
     }
 })

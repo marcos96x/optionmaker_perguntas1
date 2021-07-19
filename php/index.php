@@ -74,28 +74,27 @@ function autenticaAdmin()
     exit;
 }
 
-function getNextPrev() {
+function getNextPrev()
+{
     require_once "./DB.php";
     $token = strip_tags(addslashes($_POST['token']));
-    // next select * from foo where id = (select min(id) from foo where id > 4)
-    // prev select * from foo where id = (select max(id) from foo where id < 4)
 
     $tokenNext = null;
     $tokenPrev = null;
     // next
-    $res = $db->prepare("SELECT pergunta_url FROM pergunta WHERE pergunta_id > (SELECT pergunta_id FROM pergunta WHERE pergunta_url = :token) ORDER BY pergunta_id ASC LIMIT 1");
+    $res = $db->prepare("SELECT p1.pergunta_url FROM pergunta AS p1 WHERE p1.pergunta_id > (SELECT p2.pergunta_id FROM pergunta AS p2 WHERE p2.pergunta_url = :token AND p2.pergunta_pasta = p1.pergunta_pasta) ORDER BY p1.pergunta_id ASC LIMIT 1");
     $res->bindParam(":token", $token, PDO::PARAM_STR);
     $res->execute();
     $row = $res->fetchAll();
-    if(isset($row[0])) {
+    if (isset($row[0])) {
         $tokenNext = $row[0];
     }
     // prev
-    $res = $db->prepare("SELECT pergunta_url FROM pergunta WHERE pergunta_id < (SELECT pergunta_id FROM pergunta WHERE pergunta_url = :token) ORDER BY pergunta_id DESC LIMIT 1");
+    $res = $db->prepare("SELECT p1.pergunta_url FROM pergunta AS p1 WHERE p1.pergunta_id < (SELECT p2.pergunta_id FROM pergunta AS p2 WHERE p2.pergunta_url = :token AND p2.pergunta_pasta = p1.pergunta_pasta) ORDER BY p1.pergunta_id DESC LIMIT 1");
     $res->bindParam(":token", $token, PDO::PARAM_STR);
     $res->execute();
     $row = $res->fetchAll();
-    if(isset($row[0])) {
+    if (isset($row[0])) {
         $tokenPrev = $row[0];
     }
     echo json_encode(['status' => 200, 'tokenPrev' => $tokenPrev, 'tokenNext' => $tokenNext]);
@@ -358,9 +357,15 @@ function removeUsuario()
 function listaPerguntasPrint()
 {
     require_once "./DB.php";
-    $res = $db->prepare("SELECT 
+    $pasta = intval(addslashes(strip_tags($_POST['pasta'])));
+    if(!empty($pasta) && $pasta > 0) {
+        $res = $db->prepare("SELECT 
         pergunta_id, pergunta_titulo, pergunta_url
-        FROM pergunta ORDER BY pergunta_id ASC");
+        FROM pergunta WHERE pergunta_pasta = $pasta ORDER BY pergunta_id ASC");
+    } else {
+        exit;
+    }
+   
     $res->execute();
 
     $perguntas = $res->fetchAll();
@@ -388,9 +393,10 @@ function listaPerguntasPrint()
 function listaPerguntas()
 {
     require_once "./DB.php";
-    $res = $db->prepare("SELECT 
-        pergunta_id, pergunta_titulo, pergunta_url
-        FROM pergunta ORDER BY pergunta_id ASC");
+    $pasta = addslashes(strip_tags($_POST['pasta']));
+    $res = $db->prepare("SELECT pergunta_id, pergunta_titulo, pergunta_url
+        FROM pergunta WHERE pergunta_pasta = :pasta ORDER BY pergunta_id ASC");
+    $res->bindParam(":pasta", $pasta, PDO::PARAM_STR);
     $res->execute();
 
     $row = $res->fetchAll();
@@ -408,6 +414,7 @@ function salvaPergunta()
 {
     require_once "./DB.php";
     $titulo = addslashes(strip_tags($_POST['titulo']));
+    $pasta = addslashes(strip_tags($_POST['pasta']));
     if (empty($titulo)) {
         echo json_encode(['status' => 400]);
         exit;
@@ -415,10 +422,11 @@ function salvaPergunta()
     $token = md5(time(uniqid()));
     $data = [
         'titulo' => $titulo,
+        'pasta' => $pasta,
         'url' => $token
     ];
     // Salva pergunta            
-    $res = $db->prepare("INSERT INTO pergunta (pergunta_titulo, pergunta_url) VALUES (:titulo, :url)");
+    $res = $db->prepare("INSERT INTO pergunta (pergunta_titulo, pergunta_url, pergunta_pasta) VALUES (:titulo, :url, :pasta)");
     $res->execute($data);
     unset($db);
     $baseUri = "localhost/base_option/"; // link para acesso
@@ -556,6 +564,143 @@ function removeAlternativa()
     }
     // edita pergunta            
     $res = $db->prepare("DELETE FROM alternativa WHERE alternativa_id = :id");
+    $res->bindParam(":id", $id, PDO::PARAM_STR);
+    $res->execute();
+    unset($db);
+    echo json_encode(['status' => 200]);
+    exit;
+}
+
+function listaPastas()
+{
+    require_once "./DB.php";
+    if ($_SESSION['__USER__']['status'] == 1) {
+        $res = $db->prepare("SELECT 
+        pasta_nome, pasta_id, (SELECT COUNT(*) FROM pergunta WHERE pergunta_pasta = pasta_id) AS qtd_pergunta
+        FROM pasta ORDER BY pasta_nome ASC");
+    } else {
+        $res = $db->prepare("SELECT 
+        pasta_nome, pasta_id, (SELECT COUNT(*) FROM pergunta WHERE pergunta_pasta = pasta_id) AS qtd_pergunta
+        FROM pasta JOIN pasta_usuario ON pasta_usuario_pasta_id = pasta_id WHERE pasta_usuario_usuario_id = " . $_SESSION['__USER__']['id'] . " ORDER BY pasta_nome ASC");
+    }
+    $res->execute();
+
+    $row = $res->fetchAll();
+
+    unset($db);
+    if (isset($row[0])) {
+        echo json_encode(['status' => 200, 'pastas' => $row]);
+    } else {
+        echo json_encode(['status' => 404]);
+    }
+    exit;
+}
+
+function salvaPasta()
+{
+    require_once "./DB.php";
+    $titulo = addslashes(strip_tags($_POST['titulo']));
+    if (empty($titulo)) {
+        echo json_encode(['status' => 400]);
+        exit;
+    }
+    $data = [
+        'nome' => $titulo,
+    ];
+    // Salva pergunta            
+    $res = $db->prepare("INSERT INTO pasta (pasta_nome) VALUES (:nome)");
+    $res->execute($data);
+    unset($db);
+    echo json_encode(['status' => 200]);
+    exit;
+}
+
+function editaPasta()
+{
+    require_once "./DB.php";
+    $titulo = addslashes(strip_tags($_POST['titulo']));
+    $id = intval($_POST['id']);
+    if (empty($titulo) || $id == 0) {
+        echo json_encode(['status' => 400]);
+        exit;
+    }
+    // edita pergunta            
+    $res = $db->prepare("UPDATE pasta SET pasta_nome = :titulo WHERE pasta_id = :id");
+    $res->bindParam(":titulo", $titulo, PDO::PARAM_STR);
+    $res->bindParam(":id", $id, PDO::PARAM_STR);
+    $res->execute();
+
+    unset($db);
+    echo json_encode(['status' => 200]);
+    exit;
+}
+
+function removePasta()
+{
+    require_once "./DB.php";
+    $id = intval($_POST['id']);
+    if ($id == 0) {
+        echo json_encode(['status' => 400]);
+        exit;
+    }
+    // edita pergunta            
+    $res = $db->prepare("DELETE FROM pasta WHERE pasta_id = :id");
+    $res->bindParam(":id", $id, PDO::PARAM_STR);
+    $res->execute();
+    unset($db);
+    echo json_encode(['status' => 200]);
+    exit;
+}
+
+function listaUsuariosPasta() {
+    require_once "./DB.php";
+    $pasta = addslashes(strip_tags($_POST['pasta']));
+    $res = $db->prepare("SELECT usuario_login, usuario_id
+        FROM usuario WHERE usuario_id NOT IN (SELECT pasta_usuario_usuario_id FROM pasta_usuario WHERE pasta_usuario_pasta_id = :pasta) ORDER BY usuario_login ASC");
+    $res->bindParam(":pasta", $pasta, PDO::PARAM_STR);
+    $res->execute();
+    $usuarios_nao_vinculados = $res->fetchAll();
+    $res = $db->prepare("SELECT usuario_login, usuario_id, pasta_usuario_id
+        FROM usuario JOIN pasta_usuario ON pasta_usuario_usuario_id = usuario_id WHERE pasta_usuario_pasta_id = :pasta ORDER BY usuario_login ASC");
+    $res->bindParam(":pasta", $pasta, PDO::PARAM_STR);
+    $res->execute();
+    $usuarios_vinculados = $res->fetchAll();
+
+    unset($db);
+    echo json_encode(['status' => 200, 'usuarios_vinculados' => $usuarios_vinculados, 'usuarios_nao_vinculados' => $usuarios_nao_vinculados]);
+    exit;
+}
+
+function vinculaUsuariosPasta() {
+    require_once "./DB.php";
+    $pasta = addslashes(strip_tags($_POST['pasta']));
+    $usuario = addslashes(strip_tags($_POST['usuario']));
+
+    if (empty($pasta) || empty($usuario)) {
+        echo json_encode(['status' => 400]);
+        exit;
+    }
+    $data = [
+        'pasta' => $pasta,
+        'usuario' => $usuario,
+    ];
+    // Salva pergunta            
+    $res = $db->prepare("INSERT INTO pasta_usuario (pasta_usuario_usuario_id, pasta_usuario_pasta_id) VALUES (:usuario, :pasta)");
+    $res->execute($data);
+    unset($db);
+    echo json_encode(['status' => 200]);
+    exit;
+}
+
+function removeUsuariosPasta() {
+    require_once "./DB.php";
+    $id = intval($_POST['id']);
+    if ($id == 0) {
+        echo json_encode(['status' => 400]);
+        exit;
+    }
+    // edita pergunta            
+    $res = $db->prepare("DELETE FROM pasta_usuario WHERE pasta_usuario_id = :id");
     $res->bindParam(":id", $id, PDO::PARAM_STR);
     $res->execute();
     unset($db);

@@ -24,6 +24,8 @@
                 </div>
             </div>
         </div>
+
+        <input type="hidden" id="pasta_id">
         <div id="no-loading" class="d-none">
             <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
                 <a class="navbar-brand"><img src="./img/logo-option-maker.png" width="30"> <strong>OptionMaker</strong></a>
@@ -33,7 +35,11 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto">
-
+                        <li class="nav-item ">
+                            <a class="pointer link-menu nav-link" href="pastas.html">
+                                <i class="fa fa-folder"></i> Pastas
+                            </a>
+                        </li>
                         <li class="nav-item ">
                             <a class="pointer link-menu nav-link hide-usuario" href="usuarios.html">
                                 <i class="fa fa-plus"></i> Cadastrar Usuários
@@ -72,7 +78,7 @@
                                                 class="btn btn-danger btn-sm pull-right"> <i class="fa fa-qrcode"></i> </a> -->
                                             </div>
                                             <div class="col-sm-2 text-right hide-usuario">
-                                                <a class="btn btn-danger btn-sm text-white btn-block" target="_blank" href="print-resultados.html"> <i class="fa fa-print"></i> Imprimir resultado </a>
+                                                <a class="btn btn-danger btn-sm text-white btn-block" id="btn-print" target="_blank" href="print-resultados.html"> <i class="fa fa-print"></i> Imprimir resultado </a>
                                             </div>
                                             <div class="col-sm-2 text-right hide-usuario">
                                                 <a v-on:click="addPergunta()" class="btn btn-danger btn-sm text-white btn-block"> <i class="fa fa-plus"></i> Adicionar </a>
@@ -90,13 +96,13 @@
                                                 <hr>
                                                 <div class="row justify-content-around mt-5">
                                                     <div class="col-sm-12 col-xs-12 col-md-2 col-lg-2" v-if="usuario_status_optionmaker == 1">
-                                                        <a :href="__BASE_URI__ + 'alternativas.html?pergunta=' + p.pergunta_id" class="btn btn-danger btn-sm btn-block">
+                                                        <a :href="__BASE_URI__ + 'alternativas.html?pergunta=' + p.pergunta_id + '&pasta=' + pasta_id" class="btn btn-danger btn-sm btn-block">
                                                             <i class="fa fa-list"></i> Alternativas
                                                         </a>
                                                     </div>
 
                                                     <div class="col-sm-12 col-xs-12 col-md-2 col-lg-2">
-                                                        <a :href="__BASE_URI__ + 'grafico.html?token=' + p.pergunta_url" class="btn btn-danger btn-sm btn-block">
+                                                        <a :href="__BASE_URI__ + 'grafico.html?token=' + p.pergunta_url + '&pasta=' + pasta_id" class="btn btn-danger btn-sm btn-block">
                                                             <i class="fa fa-chart-bar"></i> Gráfico
                                                         </a>
                                                     </div>
@@ -213,9 +219,6 @@
         </div>
 
     </div>
-
-
-
 
     <!-- Scripts -->
     <script src="./plugins/jquery.js"></script>

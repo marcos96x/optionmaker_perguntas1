@@ -5,8 +5,12 @@ var vm = new Vue({
     },
     methods: {
         listarPerguntas: () => {
+            const urlParams = new URLSearchParams(window.location.search);
+
+            var pasta = urlParams.get('pasta');
             let data = {
                 'action': 'listaPerguntasPrint',
+                'pasta': pasta
             };
             $.ajax({
                 url: __BASE_API__,
