@@ -429,8 +429,8 @@ function salvaPergunta()
     $res = $db->prepare("INSERT INTO pergunta (pergunta_titulo, pergunta_url, pergunta_pasta) VALUES (:titulo, :url, :pasta)");
     $res->execute($data);
     unset($db);
-    $baseUri = "localhost/base_option/"; // link para acesso
-    // $baseUri = "https://optionmaker.com.br/teste_qrcode/"; // link para acesso
+    // $baseUri = "localhost/base_option/"; // link para acesso
+    $baseUri = "https://optionmaker.com.br/teste_qrcode/"; // link para acesso
     $qrCodeName = $baseUri . '/pergunta.html?token=' . $token;
     $dir = dirname(__FILE__);
     $dir = explode(DIRECTORY_SEPARATOR . "php" . DIRECTORY_SEPARATOR, $dir);
