@@ -430,7 +430,7 @@ function salvaPergunta()
     $res->execute($data);
     unset($db);
     // $baseUri = "localhost/base_option/"; // link para acesso
-    $baseUri = "https://optionmaker.com.br/teste_qrcode/"; // link para acesso
+    $baseUri = "https://optionmaker.com.br/real_time/"; // link para acesso
     $qrCodeName = $baseUri . '/pergunta.html?token=' . $token;
     $dir = dirname(__FILE__);
     $dir = explode(DIRECTORY_SEPARATOR . "php" . DIRECTORY_SEPARATOR, $dir);
@@ -452,14 +452,25 @@ function editaPergunta()
         echo json_encode(['status' => 400]);
         exit;
     }
-    // edita pergunta            
-    $res = $db->prepare("UPDATE pergunta SET pergunta_titulo = :titulo WHERE pergunta_id = :id");
+    // edita pergunta           
+    $token = md5(time(uniqid())); 
+    $res = $db->prepare("UPDATE pergunta SET pergunta_titulo = :titulo, pergunta_url = :token WHERE pergunta_id = :id");
     $res->bindParam(":titulo", $titulo, PDO::PARAM_STR);
     $res->bindParam(":id", $id, PDO::PARAM_STR);
+    $res->bindParam(":token", $token, PDO::PARAM_STR);
     $res->execute();
 
 
     unset($db);
+    $baseUri = "https://optionmaker.com.br/real_time/"; // link para acesso
+    $qrCodeName = $baseUri . '/pergunta.html?token=' . $token;
+    $dir = dirname(__FILE__);
+    $dir = explode(DIRECTORY_SEPARATOR . "php" . DIRECTORY_SEPARATOR, $dir);
+    $dir = explode(DIRECTORY_SEPARATOR . "php", $dir[0]);
+    $base = $dir[0] . DIRECTORY_SEPARATOR . 'qrcodes';
+
+    @system("sudo chmod -R 777 $base");
+    QRcode::png($qrCodeName, $base . DIRECTORY_SEPARATOR . $token . '.png', QR_ECLEVEL_L, 10);
     echo json_encode(['status' => 200]);
     exit;
 }

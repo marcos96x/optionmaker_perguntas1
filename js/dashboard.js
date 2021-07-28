@@ -27,6 +27,10 @@ var vm = new Vue({
 
                 if (res.status == 200) {
                     vm.perguntas = res.perguntas;
+                   
+                    if(vm.usuario_status_optionmaker > 1 && vm.perguntas.length > 0) {
+                        window.location.href = __BASE_URI__ + "grafico.html?token=" + vm.perguntas[0].pergunta_url + "&pasta=" + vm.pasta_id;
+                    }
                 } else {
                     vm.perguntas = null;
                 }
@@ -56,6 +60,7 @@ var vm = new Vue({
                 type: 'POST',
                 data: data
             }).done(res => {
+                console.log(res);
                 res = JSON.parse(res);
 
                 if (res.status == undefined) {
