@@ -38,19 +38,27 @@ var vm = new Vue({
         },
         addPergunta: () => {
             $("#pergunta_titulo").val("");
+            $("#pergunta_tipo").val('1').trigger('change');
+            $("#pergunta_contabiliza_grupo").val('1').trigger('change');
             $("#modalAddPergunta").modal('show');
         },
         editPergunta: (pergunta) => {
             $("#pergunta_titulo_edit").val(pergunta.pergunta_titulo);
             $("#pergunta_id_edit").val(pergunta.pergunta_id);
+            $("#pergunta_tipo_edit").val(pergunta.pergunta_tipo).trigger('change');
+            $("#pergunta_contabiliza_grupo_edit").val(pergunta.pergunta_contabiliza_grupo).trigger('change');
             $("#modalEditPergunta").modal('show');
         },
         editaPergunta: () => {
             let titulo = $("#pergunta_titulo_edit").val();
+            let tipo = $("#pergunta_tipo_edit").val();
             let id = $("#pergunta_id_edit").val();
+            let contabiliza_grupo = $("#pergunta_contabiliza_grupo_edit").val();
             let data = {
                 'action': 'editaPergunta',
+                'tipo': tipo,
                 'titulo': titulo,
+                'contabiliza_grupo': contabiliza_grupo,
                 'id': id,
                 'pasta': $("#pasta_id").val()
             };
@@ -80,9 +88,13 @@ var vm = new Vue({
         },
         salvaPergunta: () => {
             let titulo = $("#pergunta_titulo").val();
+            let tipo = $("#pergunta_tipo").val();
+            let contabiliza_grupo = $("#pergunta_contabiliza_grupo").val();
             let data = {
                 'action': 'salvaPergunta',
                 'titulo': titulo,
+                'tipo': tipo,
+                'contabiliza_grupo': contabiliza_grupo,
                 'pasta': $("#pasta_id").val()
             };
 

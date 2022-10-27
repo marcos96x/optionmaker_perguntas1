@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./plugins/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+
+    <link rel="stylesheet" href="./css/toastr.css">
+    <!-- CSS Index -->
+    <link rel="stylesheet" href="./css/dashboard.css">
+
+    <title>Página Administrativa</title>
+</head>
+
+<body>
+    <div id="app">
+        <div id="loading">
+            <div class="row">
+                <div class="col-sm-12 text-center mt-5">
+                    <br><br>
+                    <img src="./img/loading.gif" alt=""> <br>
+                </div>
+            </div>
+        </div>
+
+        <input type="hidden" id="pasta_id">
+        <div id="no-loading" class="d-none">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+                <a class="navbar-brand"><img src="./img/logo-option-maker.png" width="30"> <strong>OptionMaker</strong></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item ">
+                            <a class="pointer link-menu nav-link" href="pastas.html">
+                                <i class="fa fa-folder"></i> Grupos
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="pointer link-menu nav-link hide-usuario" href="usuarios.html">
+                                <i class="fa fa-plus"></i> Cadastrar Usuários
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="pointer nav-link">
+                                &nbsp;&nbsp;
+                                <i class="fa fa-user"></i>
+                                Bem vindo, <span id="nome_usuario"></span>!
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="pointer nav-link text-danger" v-on:click="logout()">
+                                <i class="fa fa-sign-out"></i> Sair
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+
+
+
+            <div class="container">
+                <div class="row pt-5 mt-5">
+                    <div class="col-sm-12 col-md-12 pt-2">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <h5 class="card-header">
+                                        <div class="row">
+                                            <div class="col-sm-8">
+                                                <i class="fa fa-list"></i> Média
+                                            </div>
+                                            <div class="col-sm-2 text-right hide-usuario">
+                                                <a class="btn btn-danger btn-sm text-white btn-block" id="btn-print" target="_blank" href="print-resultados.html"> <i class="fa fa-print"></i> Imprimir resultado </a>
+                                            </div>
+                                            <div class="col-sm-2 text-right hide-usuario">
+                                                <a v-on:click="addPergunta()" class="btn btn-danger btn-sm text-white btn-block"> <i class="fa fa-plus"></i> Adicionar </a>
+                                            </div>
+                                        </div>
+                                    </h5>
+                                    <div class="card-body">
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="./plugins/jquery.js"></script>
+    <script src="./plugins/bootstrap/bootstrap.js"></script>
+    <script src="./plugins/vue.js"></script>
+    <script src="./js/toastr.js"></script>
+    <!-- Constantes -->
+    <script src="./js/constantes.js"></script>
+
+    <!-- Autenticacao -->
+    <script src="./js/autenticacao.js"></script>
+
+    <!-- JS Index -->
+    <script src="./js/pasta_media.js"></script>
+
+
+    <script>
+        if (localStorage.getItem('usuario_status_optionmaker') > 1) {
+            $(".hide-usuario").hide();
+        }
+    </script>
+</body>
+
+</html>

@@ -38,6 +38,7 @@ var vm = new Vue({
         },
         addAlternativa: () => {
             $("#alternativa_titulo").val("");
+            $("#alternativa_peso").val("");
             $("#alternativa_cor").val("");
             $("#modalAddalternativa").modal('show');
         },
@@ -45,17 +46,20 @@ var vm = new Vue({
             $("#alternativa_titulo_edit").val(alternativa.alternativa_titulo);
             $("#alternativa_cor_edit").val(alternativa.alternativa_cor);
             $("#alternativa_id_edit").val(alternativa.alternativa_id);
+            $("#alternativa_peso_edit").val(alternativa.alternativa_peso);
             $("#modalEditalternativa").modal('show');
         },
         editaAlternativa: () => {
             let titulo = $("#alternativa_titulo_edit").val();
             let cor = $("#alternativa_cor_edit").val();
             let id = $("#alternativa_id_edit").val();
+            let peso = $("#alternativa_peso_edit").val();
             let data = {
                 'action': 'editaAlternativa',
                 'titulo': titulo,
                 'cor': cor,
                 'id': id,
+                'peso': peso,
             };
 
             $.ajax({
@@ -83,10 +87,12 @@ var vm = new Vue({
         salvaAlternativa: () => {
             let titulo = $("#alternativa_titulo").val();
             let cor = $("#alternativa_cor").val();
+            let peso = $("#alternativa_peso").val();
             let data = {
                 'action': 'salvaAlternativa',
                 'titulo': titulo,
                 'cor': cor,
+                'peso': peso,
                 'pergunta': $("#pergunta_id").val()
             };
             $.ajax({

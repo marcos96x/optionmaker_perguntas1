@@ -394,7 +394,7 @@ function listaPerguntas()
 {
     require_once "./DB.php";
     $pasta = addslashes(strip_tags($_POST['pasta']));
-    $res = $db->prepare("SELECT pergunta_id, pergunta_titulo, pergunta_url
+    $res = $db->prepare("SELECT pergunta_id, pergunta_titulo, pergunta_url, pergunta_tipo, pergunta_contabiliza_grupo
         FROM pergunta WHERE pergunta_pasta = :pasta ORDER BY pergunta_id ASC");
     $res->bindParam(":pasta", $pasta, PDO::PARAM_STR);
     $res->execute();
@@ -414,19 +414,23 @@ function salvaPergunta()
 {
     require_once "./DB.php";
     $titulo = addslashes(strip_tags($_POST['titulo']));
+    $tipo = addslashes(strip_tags($_POST['tipo']));
     $pasta = addslashes(strip_tags($_POST['pasta']));
+    $contabiliza_grupo = addslashes(strip_tags($_POST['contabiliza_grupo']));
     if (empty($titulo)) {
         echo json_encode(['status' => 400]);
         exit;
     }
-    $token = md5(time(uniqid()));
+    $token = md5(time());
     $data = [
         'titulo' => $titulo,
+        'tipo' => $tipo,
         'pasta' => $pasta,
+        'contabiliza_grupo' => $contabiliza_grupo,
         'url' => $token
     ];
     // Salva pergunta            
-    $res = $db->prepare("INSERT INTO pergunta (pergunta_titulo, pergunta_url, pergunta_pasta) VALUES (:titulo, :url, :pasta)");
+    $res = $db->prepare("INSERT INTO pergunta (pergunta_titulo, pergunta_url, pergunta_pasta, pergunta_tipo, pergunta_contabiliza_grupo) VALUES (:titulo, :url, :pasta, :tipo, :contabiliza_grupo)");
     $res->execute($data);
     unset($db);
     // $baseUri = "localhost/base_option/"; // link para acesso
@@ -447,21 +451,26 @@ function editaPergunta()
 {
     require_once "./DB.php";
     $titulo = addslashes(strip_tags($_POST['titulo']));
+    $tipo = addslashes(strip_tags($_POST['tipo']));
+    $contabiliza_grupo = intval($_POST['contabiliza_grupo']);
     $id = intval($_POST['id']);
     if (empty($titulo) || $id == 0) {
         echo json_encode(['status' => 400]);
         exit;
     }
     // edita pergunta           
-    $token = md5(time(uniqid())); 
-    $res = $db->prepare("UPDATE pergunta SET pergunta_titulo = :titulo, pergunta_url = :token WHERE pergunta_id = :id");
+    $token = md5(time()); 
+    $res = $db->prepare("UPDATE pergunta SET pergunta_titulo = :titulo, pergunta_url = :token, pergunta_tipo = :tipo, pergunta_contabiliza_grupo = :contabiliza_grupo WHERE pergunta_id = :id");
     $res->bindParam(":titulo", $titulo, PDO::PARAM_STR);
+    $res->bindParam(":tipo", $tipo, PDO::PARAM_STR);
     $res->bindParam(":id", $id, PDO::PARAM_STR);
     $res->bindParam(":token", $token, PDO::PARAM_STR);
+    $res->bindParam(":contabiliza_grupo", $contabiliza_grupo, PDO::PARAM_STR);
     $res->execute();
 
 
     unset($db);
+    // $baseUri = "localhost/base_option/"; // link para acesso
     $baseUri = "https://optionmaker.com.br/real_time/"; // link para acesso
     $qrCodeName = $baseUri . '/pergunta.html?token=' . $token;
     $dir = dirname(__FILE__);
@@ -501,6 +510,7 @@ function salvaAlternativa()
     require_once "./DB.php";
     $titulo = addslashes(strip_tags($_POST['titulo']));
     $cor = addslashes(strip_tags($_POST['cor']));
+    $peso = addslashes(strip_tags($_POST['peso']));
     $pergunta = intval($_POST['pergunta']);
     if (empty($titulo) || empty($cor) || $pergunta == 0) {
         echo json_encode(['status' => 400]);
@@ -510,9 +520,10 @@ function salvaAlternativa()
         'titulo' => $titulo,
         'cor' => $cor,
         'pergunta' => $pergunta,
+        'peso' => $peso ? $peso : '0',
     ];
     // Salva pergunta            
-    $res = $db->prepare("INSERT INTO alternativa (alternativa_titulo, alternativa_cor, alternativa_pergunta) VALUES (:titulo, :cor, :pergunta)");
+    $res = $db->prepare("INSERT INTO alternativa (alternativa_titulo, alternativa_cor, alternativa_pergunta, alternativa_peso) VALUES (:titulo, :cor, :pergunta, :peso)");
     $res->execute($data);
     unset($db);
     echo json_encode(['status' => 200]);
@@ -528,7 +539,7 @@ function listarAlternativas()
         exit;
     }
 
-    $res = $db->prepare("SELECT alternativa_id, alternativa_titulo, alternativa_cor FROM alternativa WHERE alternativa_pergunta = :pergunta");
+    $res = $db->prepare("SELECT alternativa_id, alternativa_titulo, alternativa_cor, alternativa_peso FROM alternativa WHERE alternativa_pergunta = :pergunta");
     $res->bindParam(":pergunta", $pergunta, PDO::PARAM_STR);
     $res->execute();
     $row = $res->fetchAll();
@@ -547,16 +558,18 @@ function editaAlternativa()
     require_once "./DB.php";
     $titulo = addslashes(strip_tags($_POST['titulo']));
     $cor = addslashes(strip_tags($_POST['cor']));
+    $peso = addslashes(strip_tags($_POST['peso'])) ? addslashes(strip_tags($_POST['peso'])) : '0';
     $id = intval($_POST['id']);
     if (empty($titulo) || $id == 0) {
         echo json_encode(['status' => 400]);
         exit;
     }
     // edita pergunta            
-    $res = $db->prepare("UPDATE alternativa SET alternativa_titulo = :titulo, alternativa_cor = :cor WHERE alternativa_id = :id");
+    $res = $db->prepare("UPDATE alternativa SET alternativa_titulo = :titulo, alternativa_cor = :cor, alternativa_peso = :peso WHERE alternativa_id = :id");
     $res->bindParam(":titulo", $titulo, PDO::PARAM_STR);
     $res->bindParam(":cor", $cor, PDO::PARAM_STR);
     $res->bindParam(":id", $id, PDO::PARAM_STR);
+    $res->bindParam(":peso", $peso, PDO::PARAM_STR);
     $res->execute();
 
 
@@ -592,7 +605,7 @@ function listaPastas()
     } else {
         $res = $db->prepare("SELECT 
         pasta_nome, pasta_id, (SELECT COUNT(*) FROM pergunta WHERE pergunta_pasta = pasta_id) AS qtd_pergunta
-        FROM pasta JOIN pasta_usuario ON pasta_usuario_pasta_id = pasta_id WHERE pasta_usuario_usuario_id = " . $_SESSION['__USER__']['id'] . " ORDER BY pasta_nome ASC");
+        FROM pasta ORDER BY pasta_nome ASC");
     }
     $res->execute();
 

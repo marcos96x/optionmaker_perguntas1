@@ -37,7 +37,7 @@
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item ">
                             <a class="pointer link-menu nav-link" href="pastas.html">
-                                <i class="fa fa-folder"></i> Pastas
+                                <i class="fa fa-folder"></i> Grupos
                             </a>
                         </li>
                         <li class="nav-item ">
@@ -157,6 +157,19 @@
                                 <div class="modal-body">
                                     <label for="pergunta_titulo">Título da pergunta</label>
                                     <input type="text" class="form-control" id="pergunta_titulo">
+                                    <br>
+                                    <label for="pergunta_tipo">Tipo de exibição da resposta</label>
+                                    <select name="pergunta_tipo" id="pergunta_tipo" class="form-control">
+                                        <option value="1">Comum, resultado com média simples (números)</option>
+                                        <option value="2">Porcentagem, resultado com média simples (%)</option>
+                                        <option value="3">Porcentagem, resultado com média ponderada com os pesos (%)</option>
+                                    </select>
+                                    <br>
+                                    <label for="pergunta_contabiliza_grupo">Contabilizar resultados com o grupo?</label>
+                                    <select name="pergunta_contabiliza_grupo" id="pergunta_contabiliza_grupo" class="form-control">
+                                        <option value="1">Sim</option>
+                                        <option value="0">Não</option>                                        
+                                    </select>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -182,6 +195,19 @@
                                     <input type="hidden" id="pergunta_id_edit">
                                     <label for="pergunta_titulo_edit">Título da pergunta</label>
                                     <input type="text" class="form-control" id="pergunta_titulo_edit">
+                                    <br>
+                                    <label for="pergunta_tipo">Tipo de exibição da resposta</label>
+                                    <select name="pergunta_tipo" id="pergunta_tipo_edit" class="form-control">
+                                        <option value="1">Comum, resultado com média simples (números)</option>
+                                        <option value="2">Porcentagem, resultado com média simples (%)</option>
+                                        <option value="3">Porcentagem, resultado com média ponderada com os pesos (%)</option>
+                                    </select>
+                                    <br>
+                                    <label for="pergunta_contabiliza_grupo_edit">Contabilizar resultados com o grupo?</label>
+                                    <select name="pergunta_contabiliza_grupo_edit" id="pergunta_contabiliza_grupo_edit" class="form-control">
+                                        <option value="1">Sim</option>
+                                        <option value="0">Não</option>                                        
+                                    </select>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>

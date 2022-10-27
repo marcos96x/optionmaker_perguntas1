@@ -37,7 +37,6 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto">
-
                         <li class="nav-item ">
                             <a class="pointer link-menu nav-link hide-usuario" href="usuarios.html">
                                 <i class="fa fa-plus"></i> Cadastrar Usuários
@@ -71,7 +70,7 @@
                                     <h5 class="card-header">
                                         <div class="row">
                                             <div class="col-sm-10">
-                                                <i class="fa fa-list"></i> Pastas
+                                                <i class="fa fa-list"></i> Grupos
                                                 <!-- <a href="./php/relatorioParticipantesConcluidos.php" target="_blank"
                                                 class="btn btn-danger btn-sm pull-right"> <i class="fa fa-qrcode"></i> </a> -->
                                             </div>
@@ -92,10 +91,10 @@
                                                 </a>
                                                 <div class="row justify-content-between hide-usuario">
                                                     <div class="col-12 mb-2">
-                                                        <button class="btn btn-secondary btn-block btn-sm"
-                                                            v-on:click="modalUsuario(p)">
-                                                            <i class="fa fa-user"></i> Vincular usuários
-                                                        </button>
+                                                        <a class="btn btn-secondary btn-block btn-sm"
+                                                            :href="__BASE_URI__ + 'pasta_media.html?pasta=' + p.pasta_id">
+                                                            <i class="fa fa-percent"></i> Resultados
+                                                        </a>
                                                     </div>
 
                                                     <div class="col-4">
@@ -135,14 +134,14 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-plus"></i>
-                                        <strong>Adicionar Pasta</strong>
+                                        <strong>Adicionar Grupo</strong>
                                     </h4>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    <label for="Pasta_titulo">Título da Pasta</label>
+                                    <label for="Pasta_titulo">Título</label>
                                     <input type="text" class="form-control" id="Pasta_titulo">
                                 </div>
                                 <div class="modal-footer">
@@ -208,7 +207,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-plus"></i>
-                                        <strong>Editar Pasta</strong>
+                                        <strong>Editar Grupo</strong>
                                     </h4>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
@@ -236,14 +235,14 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h4 class="modal-title" id="exampleModalLabel"><i class="fa fa-trash"></i>
-                                        <strong>Remover Pasta</strong>
+                                        <strong>Remover Grupo</strong>
                                     </h4>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
                                 <div class="modal-body text-center">
-                                    <h5>Tem certeza de que deseja remover esta Pasta? Essa ação não poderá ser desfeita.
+                                    <h5>Tem certeza de que deseja remover esta Grupo? Essa ação não poderá ser desfeita.
                                     </h5>
                                 </div>
                                 <div class="modal-footer">
