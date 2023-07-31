@@ -213,7 +213,7 @@ function finalizaQuiz()
                 'resposta' => $resposta,
                 'certa' => $certa
             ];
-            // Salva questionário            
+            // Salva questionário
             $res = $db->prepare("INSERT INTO usuario_resposta (usuario_resposta_usuario, usuario_resposta_grupo, usuario_resposta_pergunta, usuario_resposta_resposta, usuario_resposta_certa) VALUES (:usuario, :grupo, :pergunta, :resposta, :certa)");
             $res->execute($data);
         }
@@ -249,7 +249,7 @@ function finalizaQuizPorTempo()
 function listaUsuarios()
 {
     require_once "./DB.php";
-    $res = $db->prepare("SELECT 
+    $res = $db->prepare("SELECT
         usuario_id, usuario_login, usuario_status
         FROM usuario ORDER BY usuario_id ASC");
     $res->execute();
@@ -290,7 +290,7 @@ function salvaUsuario()
         'senha' => $senha,
         'status' => $status
     ];
-    // Salva pergunta            
+    // Salva pergunta
     $res = $db->prepare("INSERT INTO usuario (usuario_login, usuario_senha, usuario_status) VALUES (:login, :senha, :status)");
     $res->execute($data);
     unset($db);
@@ -344,7 +344,7 @@ function removeUsuario()
         echo json_encode(['status' => 400]);
         exit;
     }
-    // edita pergunta            
+    // edita pergunta
     $res = $db->prepare("DELETE FROM usuario WHERE usuario_id = :id");
     $res->bindParam(":id", $id, PDO::PARAM_STR);
     $res->execute();
@@ -359,20 +359,20 @@ function listaPerguntasPrint()
     require_once "./DB.php";
     $pasta = intval(addslashes(strip_tags($_POST['pasta'])));
     if(!empty($pasta) && $pasta > 0) {
-        $res = $db->prepare("SELECT 
+        $res = $db->prepare("SELECT
         pergunta_id, pergunta_titulo, pergunta_url
         FROM pergunta WHERE pergunta_pasta = $pasta ORDER BY pergunta_id ASC");
     } else {
         exit;
     }
-   
+
     $res->execute();
 
     $perguntas = $res->fetchAll();
 
     if (isset($perguntas[0])) {
         foreach ($perguntas as $k => $v) {
-            // $perguntas['alternativas'] = 
+            // $perguntas['alternativas'] =
             $res = $db->prepare("SELECT *, (SELECT SUM(alternativa_escolhas) FROM alternativa WHERE alternativa_pergunta = :pergunta) AS alternativa_total FROM alternativa WHERE alternativa_pergunta = :pergunta");
             $res->bindParam(":pergunta", $perguntas[$k]['pergunta_id'], PDO::PARAM_STR);
             $res->execute();
@@ -413,10 +413,10 @@ function listaPerguntas()
 function salvaPergunta()
 {
     require_once "./DB.php";
-    $titulo = addslashes(strip_tags($_POST['titulo']));
-    $tipo = addslashes(strip_tags($_POST['tipo']));
-    $pasta = addslashes(strip_tags($_POST['pasta']));
-    $contabiliza_grupo = addslashes(strip_tags($_POST['contabiliza_grupo']));
+    $titulo = addslashes(stripslashes(strip_tags($_POST['titulo'])));
+    $tipo = addslashes(stripslashes(strip_tags($_POST['tipo'])));
+    $pasta = addslashes(stripslashes(strip_tags($_POST['pasta'])));
+    $contabiliza_grupo = addslashes(stripslashes(strip_tags($_POST['contabiliza_grupo'])));
     if (empty($titulo)) {
         echo json_encode(['status' => 400]);
         exit;
@@ -429,7 +429,7 @@ function salvaPergunta()
         'contabiliza_grupo' => $contabiliza_grupo,
         'url' => $token
     ];
-    // Salva pergunta            
+    // Salva pergunta
     $res = $db->prepare("INSERT INTO pergunta (pergunta_titulo, pergunta_url, pergunta_pasta, pergunta_tipo, pergunta_contabiliza_grupo) VALUES (:titulo, :url, :pasta, :tipo, :contabiliza_grupo)");
     $res->execute($data);
     unset($db);
@@ -450,7 +450,7 @@ function salvaPergunta()
 function editaPergunta()
 {
     require_once "./DB.php";
-    $titulo = addslashes(strip_tags($_POST['titulo']));
+    $titulo = addslashes(stripslashes(strip_tags($_POST['titulo'])));
     $tipo = addslashes(strip_tags($_POST['tipo']));
     $contabiliza_grupo = intval($_POST['contabiliza_grupo']);
     $id = intval($_POST['id']);
@@ -458,8 +458,8 @@ function editaPergunta()
         echo json_encode(['status' => 400]);
         exit;
     }
-    // edita pergunta           
-    $token = md5(time()); 
+    // edita pergunta
+    $token = md5(time());
     $res = $db->prepare("UPDATE pergunta SET pergunta_titulo = :titulo, pergunta_url = :token, pergunta_tipo = :tipo, pergunta_contabiliza_grupo = :contabiliza_grupo WHERE pergunta_id = :id");
     $res->bindParam(":titulo", $titulo, PDO::PARAM_STR);
     $res->bindParam(":tipo", $tipo, PDO::PARAM_STR);
@@ -492,7 +492,7 @@ function removePergunta()
         echo json_encode(['status' => 400]);
         exit;
     }
-    // remove pergunta   
+    // remove pergunta
     // faltando deletar qrcode
     $res = $db->prepare("DELETE FROM alternativa WHERE alternativa_pergunta = :id");
     $res->bindParam(":id", $id, PDO::PARAM_STR);
@@ -508,7 +508,7 @@ function removePergunta()
 function salvaAlternativa()
 {
     require_once "./DB.php";
-    $titulo = addslashes(strip_tags($_POST['titulo']));
+    $titulo = addslashes(stripslashes(strip_tags($_POST['titulo'])));
     $cor = addslashes(strip_tags($_POST['cor']));
     $peso = addslashes(strip_tags($_POST['peso']));
     $pergunta = intval($_POST['pergunta']);
@@ -522,7 +522,7 @@ function salvaAlternativa()
         'pergunta' => $pergunta,
         'peso' => $peso ? $peso : '0',
     ];
-    // Salva pergunta            
+    // Salva pergunta
     $res = $db->prepare("INSERT INTO alternativa (alternativa_titulo, alternativa_cor, alternativa_pergunta, alternativa_peso) VALUES (:titulo, :cor, :pergunta, :peso)");
     $res->execute($data);
     unset($db);
@@ -564,7 +564,7 @@ function editaAlternativa()
         echo json_encode(['status' => 400]);
         exit;
     }
-    // edita pergunta            
+    // edita pergunta
     $res = $db->prepare("UPDATE alternativa SET alternativa_titulo = :titulo, alternativa_cor = :cor, alternativa_peso = :peso WHERE alternativa_id = :id");
     $res->bindParam(":titulo", $titulo, PDO::PARAM_STR);
     $res->bindParam(":cor", $cor, PDO::PARAM_STR);
@@ -586,7 +586,7 @@ function removeAlternativa()
         echo json_encode(['status' => 400]);
         exit;
     }
-    // edita pergunta            
+    // edita pergunta
     $res = $db->prepare("DELETE FROM alternativa WHERE alternativa_id = :id");
     $res->bindParam(":id", $id, PDO::PARAM_STR);
     $res->execute();
@@ -599,11 +599,11 @@ function listaPastas()
 {
     require_once "./DB.php";
     if ($_SESSION['__USER__']['status'] == 1) {
-        $res = $db->prepare("SELECT 
+        $res = $db->prepare("SELECT
         pasta_nome, pasta_id, (SELECT COUNT(*) FROM pergunta WHERE pergunta_pasta = pasta_id) AS qtd_pergunta
         FROM pasta ORDER BY pasta_nome ASC");
     } else {
-        $res = $db->prepare("SELECT 
+        $res = $db->prepare("SELECT
         pasta_nome, pasta_id, (SELECT COUNT(*) FROM pergunta WHERE pergunta_pasta = pasta_id) AS qtd_pergunta
         FROM pasta ORDER BY pasta_nome ASC");
     }
@@ -623,7 +623,7 @@ function listaPastas()
 function salvaPasta()
 {
     require_once "./DB.php";
-    $titulo = addslashes(strip_tags($_POST['titulo']));
+    $titulo = addslashes(stripslashes(strip_tags($_POST['titulo'])));
     if (empty($titulo)) {
         echo json_encode(['status' => 400]);
         exit;
@@ -631,7 +631,7 @@ function salvaPasta()
     $data = [
         'nome' => $titulo,
     ];
-    // Salva pergunta            
+    // Salva pergunta
     $res = $db->prepare("INSERT INTO pasta (pasta_nome) VALUES (:nome)");
     $res->execute($data);
     unset($db);
@@ -648,7 +648,7 @@ function editaPasta()
         echo json_encode(['status' => 400]);
         exit;
     }
-    // edita pergunta            
+    // edita pergunta
     $res = $db->prepare("UPDATE pasta SET pasta_nome = :titulo WHERE pasta_id = :id");
     $res->bindParam(":titulo", $titulo, PDO::PARAM_STR);
     $res->bindParam(":id", $id, PDO::PARAM_STR);
@@ -667,7 +667,7 @@ function removePasta()
         echo json_encode(['status' => 400]);
         exit;
     }
-    // edita pergunta            
+    // edita pergunta
     $res = $db->prepare("DELETE FROM pasta WHERE pasta_id = :id");
     $res->bindParam(":id", $id, PDO::PARAM_STR);
     $res->execute();
@@ -708,7 +708,7 @@ function vinculaUsuariosPasta() {
         'pasta' => $pasta,
         'usuario' => $usuario,
     ];
-    // Salva pergunta            
+    // Salva pergunta
     $res = $db->prepare("INSERT INTO pasta_usuario (pasta_usuario_usuario_id, pasta_usuario_pasta_id) VALUES (:usuario, :pasta)");
     $res->execute($data);
     unset($db);
@@ -723,7 +723,7 @@ function removeUsuariosPasta() {
         echo json_encode(['status' => 400]);
         exit;
     }
-    // edita pergunta            
+    // edita pergunta
     $res = $db->prepare("DELETE FROM pasta_usuario WHERE pasta_usuario_id = :id");
     $res->bindParam(":id", $id, PDO::PARAM_STR);
     $res->execute();

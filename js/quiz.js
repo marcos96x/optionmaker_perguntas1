@@ -19,6 +19,9 @@ var vm = new Vue({
 
             this.token = token;
             this.keyLS = "pergunta_" + token;
+            if(localStorage.getItem(this.keyLS)) {
+                this.endQuiz = true;
+            }
             this.getPergunta();
             // if (localStorage.getItem(this.keyLS) == null || localStorage.getItem(this.keyLS) == false) {
             //     this.getPergunta();
@@ -44,7 +47,6 @@ var vm = new Vue({
                         return false;
                     }
 
-                    console.log(res);
                     if (res.status == 200) {
                         vm.pergunta = res.pergunta;
                     } else {
@@ -90,11 +92,11 @@ var vm = new Vue({
         },
         showResultados: function () {
             this.endQuiz = true;
-            // mostra o dashboard          
+            // mostra o dashboard
 
-            setInterval(() => {   
-                renderizaGrafico();    
-              
+            setInterval(() => {
+                renderizaGrafico();
+
             }, 1000);
         },
     },
@@ -171,7 +173,7 @@ function renderizaGrafico() {
             // request
         }
     })
-  
+
 }
 
 function cronometro() {
