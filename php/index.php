@@ -126,6 +126,28 @@ function getPerguntaForGrafico()
     }
 }
 
+function getFirstPergunta() {
+     // captura a pergunta com o token chamada no front
+     require_once "./DB.php";
+     $res = $db->prepare("SELECT * FROM pergunta ORDER BY pergunta_id LIMIT 1");
+     $res->execute();
+
+     $row = $res->fetchAll();
+     if (isset($row[0])) {
+
+         $pergunta = $row[0];
+         $res = $db->prepare("SELECT * FROM alternativa WHERE alternativa_pergunta = :pergunta");
+         $res->bindParam(":pergunta", $pergunta['pergunta_id'], PDO::PARAM_STR);
+         $res->execute();
+
+         $row = $res->fetchAll();
+         $pergunta['alternativas'] = $row;
+         echo json_encode(['status' => 200, 'pergunta' => $pergunta]);
+     } else {
+         echo json_encode(['status' => 401]);
+     }
+}
+
 function getPergunta()
 {
     // captura a pergunta com o token chamada no front
@@ -434,7 +456,7 @@ function salvaPergunta()
     $res->execute($data);
     unset($db);
     // $baseUri = "localhost/base_option/"; // link para acesso
-    $baseUri = "https://optionmaker.com.br/real_time/"; // link para acesso
+    $baseUri = "https://optionmaker.com.br/innovations/"; // link para acesso
     $qrCodeName = $baseUri . '/pergunta.html?token=' . $token;
     $dir = dirname(__FILE__);
     $dir = explode(DIRECTORY_SEPARATOR . "php" . DIRECTORY_SEPARATOR, $dir);
@@ -471,7 +493,7 @@ function editaPergunta()
 
     unset($db);
     // $baseUri = "localhost/base_option/"; // link para acesso
-    $baseUri = "https://optionmaker.com.br/real_time/"; // link para acesso
+    $baseUri = "https://optionmaker.com.br/innovations/"; // link para acesso
     $qrCodeName = $baseUri . '/pergunta.html?token=' . $token;
     $dir = dirname(__FILE__);
     $dir = explode(DIRECTORY_SEPARATOR . "php" . DIRECTORY_SEPARATOR, $dir);

@@ -1,1 +1,0 @@
-ALTER TABLE `pergunta` ADD `pergunta_pasta` INT NULL DEFAULT NULL AFTER `pergunta_url`;
